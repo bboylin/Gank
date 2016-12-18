@@ -3,11 +3,12 @@
 
 gank.io的客户端，采用RxBus+RxJava+Retrofit。
 
-<img src="./pics/1.png" width = "300" height = "600" alt="图片"/>
-<img src="./pics/2.png" width = "300" height = "600" alt="图片"/>
+<img src="./pics/1.png" width = "324" height = "576" alt="图片"/>
+<img src="./pics/2.png" width = "324" height = "576" alt="图片"/>
 
+<img src="./pics/3.png" width = "324" height = "576" alt="图片"/>
+<img src="./pics/4.png" width = "324" height = "576" alt="图片"/>
 
-![](./pics/3.jpg =100) ![](./pics/4.jpg =100)
 
 ---
 
