@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Gank</string>
+    <string name="welcome">Gank 干货营</string>
+    <string name="pic_fragment_title">图片详情</string>
+    <string name="html_fragment_title">详情</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_search">Search</string>
+    <!-- nav header-->
+    <string name="nav_header_title">Gank</string>
+    <string name="nav_today">首页</string>
+    <string name="nav_welfare">福利</string>
+    <string name="nav_android">Android</string>
+    <string name="nav_ios">iOS</string>
+    <string name="nav_front_end">前端</string>
+    <string name="nav_extra">Extra</string>
+    <string name="nav_casual">Casual</string>
+    <string name="nav_video">Video</string>
+    <string name="nav_app">App</string>
+    <string name="nav_all">All</string>
+    <string name="nav_contact_title">Contact</string>
+    <string name="nav_about">About</string>
+    <string name="nav_feedback">Feedback</string>
+</resources>
