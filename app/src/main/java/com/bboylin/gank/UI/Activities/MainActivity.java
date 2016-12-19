@@ -22,6 +22,7 @@ import com.bboylin.gank.UI.Fragments.DetailImageFragment;
 import com.bboylin.gank.UI.Fragments.DetailWebFragment;
 import com.bboylin.gank.UI.Fragments.GirlFragment;
 import com.bboylin.gank.UI.Fragments.HomeFragment;
+import com.bboylin.gank.UI.Fragments.LikeFragment;
 import com.bboylin.gank.Utils.RxBus;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.orhanobut.logger.Logger;
@@ -161,6 +162,10 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.nav_welfare:
                 replaceFragment(GirlFragment.getInstance(),R.id.fragment_container);
+                break;
+            case R.id.nav_like:
+                replaceFragment(new LikeFragment(),R.id.fragment_container);
+                //startActivity(new Intent(MainActivity.this,LikeFragment.class));
                 break;
             case R.id.nav_about:
                 Toast.makeText(this, "about is under construction", Toast.LENGTH_LONG).show();

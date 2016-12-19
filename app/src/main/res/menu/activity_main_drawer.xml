@@ -23,6 +23,10 @@
             android:id="@+id/nav_welfare"
             android:icon="@drawable/ic_menu_welfare"
             android:title="@string/nav_welfare"/>
+        <item
+            android:id="@+id/nav_like"
+            android:icon="@drawable/ic_favorite_black_18dp"
+            android:title="收藏"/>
     </group>
 
     <item android:title="Communicate">

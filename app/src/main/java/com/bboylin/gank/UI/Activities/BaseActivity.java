@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Fragments.DetailImageFragment;
 import com.bboylin.gank.UI.Fragments.DetailWebFragment;
+import com.bboylin.gank.UI.Fragments.LikeFragment;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -22,6 +23,7 @@ import rx.schedulers.Schedulers;
 
 public class BaseActivity extends AppCompatActivity {
     public String fragmentTag="home";
+    public String activityTag="main";
 
     public boolean networkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -46,6 +48,10 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (activityTag.equals(LikeFragment.TAG)){
+            finish();
+            return;
+        }
         if (fragmentTag.equals(DetailWebFragment.getInstance().tag)||fragmentTag.equals(DetailImageFragment.getInstance().tag)) {
             getSupportFragmentManager().popBackStack();
             fragmentTag = "home";

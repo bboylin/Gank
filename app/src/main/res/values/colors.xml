@@ -13,4 +13,5 @@
     <color name="divider">#33000000</color>
     <color name="grey_bg">#3f180f0f</color>
     <color name="red_bg">#f1ec1e22</color>
+    <color name="white">#deffffff</color>
 </resources>
