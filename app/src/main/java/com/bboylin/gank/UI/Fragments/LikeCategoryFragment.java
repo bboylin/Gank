@@ -54,7 +54,7 @@ public class LikeCategoryFragment extends BaseFragment implements SwipeRefreshLa
             }
         }
         mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mGankList);
-        mLinearLayoutManager=new LinearLayoutManager(getActivity());
+        mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(new SimpleItemDecoration(0));
@@ -76,7 +76,7 @@ public class LikeCategoryFragment extends BaseFragment implements SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        mGankList.clear();
+        mGankList = new ArrayList<>();
         for (Gank gank : mCommonPref.getLikeItems()) {
             if (gank.type.equals(category)) {
                 mGankList.add(gank);

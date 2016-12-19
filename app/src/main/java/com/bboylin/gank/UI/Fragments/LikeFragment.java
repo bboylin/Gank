@@ -33,16 +33,16 @@ public class LikeFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_like,container,false);
-        ButterKnife.bind(this,view);
-        mCommonPref=CommonPref.Factory.create(getActivity());
+        View view = inflater.inflate(R.layout.fragment_like, container, false);
+        ButterKnife.bind(this, view);
+        mCommonPref = CommonPref.Factory.create(getActivity());
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(getChildFragmentManager(),
                 FragmentPagerItems.with(getActivity())
-                        .add(GankApi.HOME,LikeHomeFragment.class)
+                        .add(GankApi.HOME, LikeHomeFragment.class)
                         .add(GankApi.WELFARE, LikeWelfareFragment.class)
-                        .add(GankApi.ANDROID, LikeCategoryFragment.class,new Bundler().putString(TAG,GankApi.ANDROID).get())
-                        .add(GankApi.IOS,LikeCategoryFragment.class,new Bundler().putString(TAG,GankApi.IOS).get())
-                        .add(GankApi.FRONT_END,LikeCategoryFragment.class,new Bundler().putString(TAG,GankApi.FRONT_END).get())
+                        .add(GankApi.ANDROID, LikeCategoryFragment.class, new Bundler().putString(TAG, GankApi.ANDROID).get())
+                        .add(GankApi.IOS, LikeCategoryFragment.class, new Bundler().putString(TAG, GankApi.IOS).get())
+                        .add(GankApi.FRONT_END, LikeCategoryFragment.class, new Bundler().putString(TAG, GankApi.FRONT_END).get())
                         .create());
         mViewPager.setAdapter(adapter);
         mSmartTabLayout.setViewPager(mViewPager);

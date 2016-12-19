@@ -70,7 +70,7 @@ public class LikeWelfareFragment extends BaseFragment implements SwipeRefreshLay
 
     @Override
     public void onRefresh() {
-        girlList.clear();
+        girlList = new ArrayList<>();
         for (Gank gank : mCommonPref.getLikeItems()) {
             if (gank.type.equals(GankApi.WELFARE)) {
                 girlList.add(gank);

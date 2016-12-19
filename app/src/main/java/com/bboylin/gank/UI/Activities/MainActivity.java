@@ -54,14 +54,14 @@ public class MainActivity extends BaseActivity
         setSupportActionBar(toolbar);
         initSearchView();
         mMainRepository = MainRepository.getInstance(this);
-        mCommonPref=CommonPref.Factory.create(this);
+        mCommonPref = CommonPref.Factory.create(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         mMainRepository.getDataFromNet(new ItemTypeList())
                 .subscribe(o -> Logger.d(o),
-                        throwable -> Logger.e(throwable,"error in main http queue"),
+                        throwable -> Logger.e(throwable, "error in main http queue"),
                         () -> Logger.d("finish"));
         replaceFragment(HomeFragment.getInstance(), R.id.fragment_container);
         navigationView.setNavigationItemSelectedListener(this);
@@ -76,7 +76,7 @@ public class MainActivity extends BaseActivity
                 .compose(applySchedulers())
                 .doOnNext(urlClickEvent -> mCommonPref.setWebViewUrl(urlClickEvent.url))
                 .subscribe(urlClickEvent -> {
-                    switch (urlClickEvent.type){
+                    switch (urlClickEvent.type) {
                         case UrlClickEvent.TEXT:
                             replaceFragment(DetailWebFragment.getInstance(), R.id.fragment_container);
                             break;
@@ -84,7 +84,7 @@ public class MainActivity extends BaseActivity
                             replaceFragment(DetailImageFragment.getInstance(), R.id.fragment_container);
                             break;
                     }
-                },throwable -> Toast.makeText(this,"出错了",Toast.LENGTH_SHORT));
+                }, throwable -> Toast.makeText(this, "出错了", Toast.LENGTH_SHORT));
     }
 
     private void initSearchView() {
@@ -114,9 +114,9 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_share:
-                Toast.makeText(this,"share",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_search:
                 break;
@@ -150,21 +150,21 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.nav_android:
                 mCommonPref.setCategory(GankApi.ANDROID);
-                replaceFragment(new CategoryFragment(),R.id.fragment_container);
+                replaceFragment(new CategoryFragment(), R.id.fragment_container);
                 break;
             case R.id.nav_ios:
                 mCommonPref.setCategory(GankApi.IOS);
-                replaceFragment(new CategoryFragment(),R.id.fragment_container);
+                replaceFragment(new CategoryFragment(), R.id.fragment_container);
                 break;
             case R.id.nav_front_end:
                 mCommonPref.setCategory(GankApi.FRONT_END);
-                replaceFragment(new CategoryFragment(),R.id.fragment_container);
+                replaceFragment(new CategoryFragment(), R.id.fragment_container);
                 break;
             case R.id.nav_welfare:
-                replaceFragment(GirlFragment.getInstance(),R.id.fragment_container);
+                replaceFragment(GirlFragment.getInstance(), R.id.fragment_container);
                 break;
             case R.id.nav_like:
-                replaceFragment(new LikeFragment(),R.id.fragment_container);
+                replaceFragment(new LikeFragment(), R.id.fragment_container);
                 //startActivity(new Intent(MainActivity.this,LikeFragment.class));
                 break;
             case R.id.nav_about:
