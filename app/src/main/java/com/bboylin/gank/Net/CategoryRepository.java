@@ -47,24 +47,11 @@ public class CategoryRepository extends BaseRepository {
                             mCategoryPref.setiOSList(list);
                         }else if (category.equals(GankApi.FRONT_END)){
                             mCategoryPref.setFrontEndList(list);
+                        }else if (category.equals(GankApi.WELFARE)){
+                            mCategoryPref.setGirlList(list);
                         }
                     }
                 });
-    }
-
-    public Observable<List<String>> getGirlDataFromNet(int num, int page, boolean refresh){
-        return mGankService.getCategoryData(GankApi.WELFARE,num,page)
-                .compose(applySchedulers())
-                .filter(categoryResponse -> categoryResponse.error==false)
-                .map(categoryResponse -> categoryResponse.mGankList)
-                .doOnNext(list -> {
-                    if (refresh){
-                        mCategoryPref.setGirlList(list);
-                    }
-                })
-                .flatMap(Observable::from)
-                .map(gank -> gank.url)
-                .toList();
     }
 
     public List<Gank> getCategoryUrlsFromDisk(String category){

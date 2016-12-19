@@ -6,6 +6,8 @@ import com.baoyz.treasure.Preferences;
 import com.baoyz.treasure.Treasure;
 import com.bboylin.gank.Utils.GsonConverterFactory;
 
+import java.util.List;
+
 /**
  * Created by lin on 2016/11/13.
  */
@@ -20,6 +22,10 @@ public interface CommonPref {
     void setCategory(String category);
 
     String getCategory();
+
+    void setLikeItems(List<Gank> likeItems);
+
+    List<Gank> getLikeItems();
 
     class Factory {
         public static CommonPref create(Context context) {

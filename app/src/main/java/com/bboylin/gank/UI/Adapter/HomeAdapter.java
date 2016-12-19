@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bboylin.gank.Data.CommonPref;
 import com.bboylin.gank.Data.Gank;
 import com.bboylin.gank.Event.UrlClickEvent;
 import com.bboylin.gank.R;
@@ -14,6 +16,7 @@ import com.bboylin.gank.UI.Activities.MainActivity;
 import com.bboylin.gank.Utils.RxBus;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,10 +33,15 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int IMAGE = 2;
     private List<Gank> mList;
     private Context mContext;
+    CommonPref mCommonPref;
 
     public HomeAdapter(List<Gank> list, Context context) {
         mList = list;
         mContext = context;
+        mCommonPref = CommonPref.Factory.create(mContext);
+        if (mCommonPref.getLikeItems()==null){
+            mCommonPref.setLikeItems(new ArrayList<>());
+        }
     }
 
     @Override
@@ -70,6 +78,24 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             normalViewHolder.dateTextView.setText(gank.publishedAt.split("T")[0]);
             normalViewHolder.typeTextView.setText("分类:" + gank.type);
             normalViewHolder.titleTextView.setText(gank.desc);
+            if (mCommonPref.getLikeItems().contains(gank)){
+                normalViewHolder.starImageView.setImageResource(R.drawable.ic_favorite_black_24dp);
+            }
+            normalViewHolder.starImageView.setOnClickListener(v -> {
+                if (mCommonPref.getLikeItems().contains(gank)){
+                    normalViewHolder.starImageView.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                    List<Gank> list=mCommonPref.getLikeItems();
+                    list.remove(gank);
+                    mCommonPref.setLikeItems(list);
+                    Toast.makeText(mContext,"已取消收藏",Toast.LENGTH_SHORT).show();
+                }else {
+                    normalViewHolder.starImageView.setImageResource(R.drawable.ic_favorite_black_24dp);
+                    List<Gank> list=mCommonPref.getLikeItems();
+                    list.add(gank);
+                    mCommonPref.setLikeItems(list);
+                    Toast.makeText(mContext,"已收藏",Toast.LENGTH_SHORT).show();
+                }
+            });
         } else if (holder instanceof ImageViewHolder) {
             ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
             String url=mList.get(position).url;
@@ -103,6 +129,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         @BindView(R.id.today_title) TextView titleTextView;
         @BindView(R.id.today_type) TextView typeTextView;
         @BindView(R.id.today_date) TextView dateTextView;
+        @BindView(R.id.btn_star) ImageView starImageView;
 
         public NormalViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.today_item, parent, false));

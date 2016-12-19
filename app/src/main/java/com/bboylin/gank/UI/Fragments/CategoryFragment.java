@@ -66,7 +66,7 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(new SimpleItemDecoration(0));
         mList = mCategoryRepository.getCategoryUrlsFromDisk(category);
-        mCategoryAdapter = new CategoryAdapter(R.layout.category_item, mList);
+        mCategoryAdapter = new CategoryAdapter(getActivity(),R.layout.category_item, mList);
         mCategoryAdapter.openLoadAnimation();
         mCategoryAdapter.openLoadMore(PAGE_SIZE, true);
         mCategoryAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {

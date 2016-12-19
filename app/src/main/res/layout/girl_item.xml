@@ -1,12 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
     <ImageView
-        android:layout_margin="3dp"
         android:id="@+id/girl_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"/>
+
+    <RelativeLayout
+        android:background="@color/grey_bg"
+        android:layout_margin="4sp"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom">
+
+        <ImageView
+            android:id="@+id/btn_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_favorite_border_white_24dp"/>
+
+        <TextView
+            android:id="@+id/tvShowTime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/btn_star"
+            android:gravity="right"
+            android:text="时间"
+            android:textColor="@color/imageColorPlaceholder"
+            android:textSize="18sp"/>
+
+    </RelativeLayout>
+</FrameLayout>

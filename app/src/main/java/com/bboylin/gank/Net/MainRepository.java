@@ -58,7 +58,7 @@ public class MainRepository extends BaseRepository {
                 mHomeRepository.getDateListFromNet();
                 break;
             case WARFARE:
-                observable=mCategoryRepository.getGirlDataFromNet(10,1,true);
+                observable=mCategoryRepository.getDataFromNet(GankApi.WELFARE,10,1,true);
                 break;
             case ANDROID:
                 observable=mCategoryRepository.getDataFromNet(GankApi.ANDROID,10,1,true);

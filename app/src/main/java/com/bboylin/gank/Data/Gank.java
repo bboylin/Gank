@@ -33,4 +33,15 @@ public class Gank {
     public boolean used;
     @SerializedName("who")
     public String who;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj==null){
+            return this==null;
+        }else if (getClass()!=obj.getClass()){
+            return false;
+        }else {
+            return ((Gank) obj).url.equals(url);
+        }
+    }
 }

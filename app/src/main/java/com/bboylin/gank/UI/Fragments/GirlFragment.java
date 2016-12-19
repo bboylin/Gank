@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.bboylin.gank.Data.CategoryPref;
 import com.bboylin.gank.Data.Gank;
 import com.bboylin.gank.Net.CategoryRepository;
+import com.bboylin.gank.Net.GankApi;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.GirlAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -45,7 +46,7 @@ public class GirlFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     private static final int REFRESH_COMPLETE = 0x123;
     private int page=1;
     private int mCurrentCounter=0;
-    private List<String> mList=new ArrayList<>();
+    private List<Gank> mList=new ArrayList<>();
 
     @Nullable
     @Override
@@ -59,14 +60,14 @@ public class GirlFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark, R.color.colorAccent);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,RecyclerView.VERTICAL));
-        mGirlAdapter=new GirlAdapter(getActivity(),R.layout.girl_item,getUrlList(mGirlPref.getGirlList()));
+        mGirlAdapter=new GirlAdapter(getActivity(),R.layout.girl_item,mGirlPref.getGirlList());
         mGirlAdapter.openLoadAnimation();
         mGirlAdapter.openLoadMore(PAGE_SIZE, true);
         mGirlAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
                 page++;
-                mCategoryRepository.getGirlDataFromNet(10,page,false)
+                mCategoryRepository.getDataFromNet(GankApi.WELFARE,10,page,false)
                         .subscribe(strings -> mList.addAll(strings),
                                 throwable -> Logger.e(throwable,"error in load more"),
                                 () -> {
@@ -102,16 +103,6 @@ public class GirlFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         return view;
     }
 
-    private List<String> getUrlList(List<Gank> girlList) {
-        if (girlList==null){
-            return mList;
-        }
-        for (Gank gank : girlList){
-            mList.add(gank.url);
-        }
-        return mList;
-    }
-
     @Override
     public void onRefresh() {
         refresh();
@@ -119,12 +110,12 @@ public class GirlFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     }
 
     private void refresh() {
-        mCategoryRepository.getGirlDataFromNet(10,1,true)
+        mCategoryRepository.getDataFromNet(GankApi.WELFARE,10,1,true)
                 .subscribe(strings -> System.out.println(""),
                         throwable -> Logger.e(throwable,"error in girl refresh"),
                         () -> {
-                            mList=new ArrayList<String>();
-                            mGirlAdapter.setNewData(getUrlList(mGirlPref.getGirlList()));
+                            mList=new ArrayList<>();
+                            mGirlAdapter.setNewData(mGirlPref.getGirlList());
                         });
     }
 
