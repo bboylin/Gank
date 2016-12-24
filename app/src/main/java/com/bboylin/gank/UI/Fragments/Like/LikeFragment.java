@@ -40,11 +40,11 @@ public class LikeFragment extends BaseFragment {
         mCommonPref = CommonPref.Factory.create(getActivity());
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(getChildFragmentManager(),
                 FragmentPagerItems.with(getActivity())
-                        .add(GankApi.HOME, LikeHomeFragment.class)
-                        .add(GankApi.WELFARE, LikeWelfareFragment.class)
-                        .add(GankApi.ANDROID, LikeCategoryFragment.class, new Bundler().putString(TAG, GankApi.ANDROID).get())
-                        .add(GankApi.IOS, LikeCategoryFragment.class, new Bundler().putString(TAG, GankApi.IOS).get())
-                        .add(GankApi.FRONT_END, LikeCategoryFragment.class, new Bundler().putString(TAG, GankApi.FRONT_END).get())
+                        .add("全部", LikeHomeFragment.class)
+                        .add("福利", LikeWelfareFragment.class)
+                        .add("安卓", LikeCategoryFragment.class, new Bundler().putString(TAG, GankApi.ANDROID).get())
+                        .add("iOS", LikeCategoryFragment.class, new Bundler().putString(TAG, GankApi.IOS).get())
+                        .add("前端", LikeCategoryFragment.class, new Bundler().putString(TAG, GankApi.FRONT_END).get())
                         .create());
         mViewPager.setAdapter(adapter);
         mSmartTabLayout.setViewPager(mViewPager);

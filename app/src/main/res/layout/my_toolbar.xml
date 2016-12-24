@@ -7,6 +7,6 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
     android:elevation="0dp"
-    android:minHeight="?attr/actionBarSize"
+    android:height="?attr/actionBarSize"
     app:theme="@style/AppTheme.ToolBar"
     app:titleTextColor="@color/white"/>

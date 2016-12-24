@@ -1,10 +1,7 @@
 package com.bboylin.gank.UI.Fragments.Category;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -12,15 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bboylin.gank.Data.Treasure.CategoryPref;
 import com.bboylin.gank.Data.Entity.Gank;
-import com.bboylin.gank.Net.Repository.CategoryRepository;
+import com.bboylin.gank.Data.Treasure.CategoryPref;
 import com.bboylin.gank.Net.Refrofit.GankApi;
+import com.bboylin.gank.Net.Repository.CategoryRepository;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.GirlAdapter;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.orhanobut.logger.Logger;
+import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,43 +32,39 @@ import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
  * Created by lin on 2016/12/16.
  */
 
-public class GirlFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
-    @BindView(R.id.refresh_layout)
-    SwipeRefreshLayout mSwipeRefreshLayout;
+public class GirlFragment extends BaseFragment {
+    @BindView(R.id.phoenix_refresh_layout)
+    PullToRefreshView mRefreshLayout;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private GirlAdapter mGirlAdapter;
-    private static final GirlFragment instance=new GirlFragment();
+    private static final GirlFragment instance = new GirlFragment();
     private CategoryRepository mCategoryRepository;
     private CategoryPref mGirlPref;
-    private Handler mHandler;
-    private static final int REFRESH_COMPLETE = 0x123;
-    private int page=1;
-    private int mCurrentCounter=0;
-    private List<Gank> mList=new ArrayList<>();
+    private int page = 1;
+    private int mCurrentCounter = 0;
+    private List<Gank> mList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_recyclerview,container,false);
-        ButterKnife.bind(this,view);
+        View view = inflater.inflate(R.layout.phoenix_fragment_recycler, container, false);
+        ButterKnife.bind(this, view);
         setupToolBar("福利");
-        mRecyclerView.setPadding(0,0,0,0);
-        mCategoryRepository =CategoryRepository.getInstance(getActivity());
-        mGirlPref=CategoryPref.Factory.create(getActivity());
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorAccent);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,RecyclerView.VERTICAL));
-        mGirlAdapter=new GirlAdapter(getActivity(),R.layout.girl_item,mGirlPref.getGirlList());
+        mRecyclerView.setPadding(0, 0, 0, 0);
+        mCategoryRepository = CategoryRepository.getInstance(getActivity());
+        mGirlPref = CategoryPref.Factory.create(getActivity());
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
+        mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, mGirlPref.getGirlList());
         mGirlAdapter.openLoadAnimation();
         mGirlAdapter.openLoadMore(PAGE_SIZE, true);
         mGirlAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
                 page++;
-                mCategoryRepository.getDataFromNet(GankApi.WELFARE,10,page,false)
+                mCategoryRepository.getDataFromNet(GankApi.WELFARE, 10, page, false)
                         .subscribe(strings -> mList.addAll(strings),
-                                throwable -> Logger.e(throwable,"error in load more"),
+                                throwable -> Logger.e(throwable, "error in load more"),
                                 () -> {
                                     mRecyclerView.post(new Runnable() {
                                         @Override
@@ -87,36 +81,31 @@ public class GirlFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                                 });
             }
         });
-        mRecyclerView.setAdapter(mGirlAdapter);
-        mHandler=new Handler(){
+        mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what==0x123){
-                    mSwipeRefreshLayout.setRefreshing(false);
+            public void onRefresh() {
+                refresh();
+                mRefreshLayout.postDelayed(() -> {
+                    mRefreshLayout.setRefreshing(false);
                     Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
-                }
+                }, 2000);
             }
-        };
-        if (mList==null){
+        });
+        mRecyclerView.setAdapter(mGirlAdapter);
+        if (mList == null) {
             refresh();
         }
         return view;
     }
 
-    @Override
-    public void onRefresh() {
-        refresh();
-        mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 2000);
-    }
-
     private void refresh() {
-        mCategoryRepository.getDataFromNet(GankApi.WELFARE,10,1,true)
+        mCategoryRepository.getDataFromNet(GankApi.WELFARE, 10, 1, true)
                 .subscribe(strings -> System.out.println(""),
-                        throwable -> Logger.e(throwable,"error in girl refresh"),
+                        throwable -> Logger.e(throwable, "error in girl refresh"),
                         () -> {
-                            mList=new ArrayList<>();
-                            mGirlAdapter.setNewData(mGirlPref.getGirlList());
+                            mList = new ArrayList<>();
+                            mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, mGirlPref.getGirlList());
+                            mRecyclerView.setAdapter(mGirlAdapter);
                         });
     }
 

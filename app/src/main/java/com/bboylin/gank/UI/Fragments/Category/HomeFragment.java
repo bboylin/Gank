@@ -1,10 +1,7 @@
 package com.bboylin.gank.UI.Fragments.Category;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bboylin.gank.Data.Entity.Gank;
-import com.bboylin.gank.Data.Treasure.HomePref;
 import com.bboylin.gank.Data.Entity.HomeResponse;
+import com.bboylin.gank.Data.Treasure.HomePref;
 import com.bboylin.gank.Event.HomeUpdateEvent;
 import com.bboylin.gank.Net.Repository.HomeRepository;
 import com.bboylin.gank.R;
@@ -23,6 +20,7 @@ import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
 import com.bboylin.gank.Utils.RxBus;
 import com.orhanobut.logger.Logger;
+import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,17 +33,15 @@ import butterknife.ButterKnife;
  * Created by lin on 2016/10/29.
  */
 
-public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class HomeFragment extends BaseFragment{
 
-    @BindView(R.id.refresh_layout)
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.phoenix_refresh_layout)
+    PullToRefreshView mRefreshLayout;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private HomeAdapter mHomeAdapter;
     private static final HomeFragment INSTANCE = new HomeFragment();
     private LinearLayoutManager mLinearLayoutManager;
-    private Handler mHandler;
-    private static final int REFRESH_COMPLETE = 0x123;
     private HomePref mHomePref;
     private Calendar mCalendar;
     private HomeRepository mHomeRepository;
@@ -55,12 +51,10 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
+        View view = inflater.inflate(R.layout.phoenix_fragment_recycler, container, false);
         ButterKnife.bind(this, view);
         page = 1;
         setupToolBar("首页");
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorAccent);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setHasFixedSize(true);
         mHomeRepository = HomeRepository.getInstance(getContext());
@@ -70,16 +64,20 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mRecyclerView.addItemDecoration(new SimpleItemDecoration(0));
         mCalendar = Calendar.getInstance();
         mHomePref = HomePref.Factory.create(getContext());
-        mHandler = new Handler() {
+        mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case REFRESH_COMPLETE:
-                        mSwipeRefreshLayout.setRefreshing(false);
+            public void onRefresh() {
+                //下拉刷新
+                mHomeRepository.getDateListFromNet();
+                mRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRefreshLayout.setRefreshing(false);
                         Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
-                }
+                    }
+                },2000);
             }
-        };
+        });
         showLocalData();
         loadMore();
         return view;
@@ -138,13 +136,6 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     public static HomeFragment getInstance() {
         return INSTANCE;
-    }
-
-    @Override
-    public void onRefresh() {
-        //下拉刷新
-        mHomeRepository.getDateListFromNet();
-        mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 2000);
     }
 
     private void setupRecyclerView(List<Gank> dataList) {

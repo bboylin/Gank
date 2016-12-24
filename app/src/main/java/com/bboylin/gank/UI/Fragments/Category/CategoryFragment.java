@@ -1,10 +1,7 @@
 package com.bboylin.gank.UI.Fragments.Category;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bboylin.gank.Data.Entity.Gank;
 import com.bboylin.gank.Data.Treasure.CategoryPref;
 import com.bboylin.gank.Data.Treasure.CommonPref;
-import com.bboylin.gank.Data.Entity.Gank;
 import com.bboylin.gank.Net.Repository.CategoryRepository;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.CategoryAdapter;
@@ -22,6 +19,7 @@ import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.orhanobut.logger.Logger;
+import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,17 +33,15 @@ import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
  * Created by lin on 2016/12/16.
  */
 
-public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
-    @BindView(R.id.refresh_layout)
-    SwipeRefreshLayout mSwipeRefreshLayout;
+public class CategoryFragment extends BaseFragment {
+    @BindView(R.id.phoenix_refresh_layout)
+    PullToRefreshView mRefreshLayout;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private CategoryAdapter mCategoryAdapter;
     private CategoryRepository mCategoryRepository;
     private CategoryPref mCategoryPref;
-    private Handler mHandler;
     private LinearLayoutManager mLinearLayoutManager;
-    private static final int REFRESH_COMPLETE = 0x123;
     private int page = 1;
     private int mCurrentCounter = 0;
     private String category;
@@ -54,20 +50,18 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_recyclerview, container, false);
+        View view = inflater.inflate(R.layout.phoenix_fragment_recycler, container, false);
         ButterKnife.bind(this, view);
         mCategoryRepository = CategoryRepository.getInstance(getActivity());
         mCategoryPref = CategoryPref.Factory.create(getActivity());
         category = CommonPref.Factory.create(getActivity()).getCategory();
         setupToolBar(category);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorAccent);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(new SimpleItemDecoration(0));
         mList = mCategoryRepository.getCategoryUrlsFromDisk(category);
-        mCategoryAdapter = new CategoryAdapter(getActivity(),R.layout.category_item, mList);
+        mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mList);
         mCategoryAdapter.openLoadAnimation();
         mCategoryAdapter.openLoadMore(PAGE_SIZE, true);
         mCategoryAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
@@ -94,17 +88,17 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
             }
         });
         mRecyclerView.setAdapter(mCategoryAdapter);
-        mHandler = new Handler() {
+        mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                if (msg.what == 0x123) {
-                    mSwipeRefreshLayout.setRefreshing(false);
+            public void onRefresh() {
+                refresh();
+                mRefreshLayout.postDelayed(() -> {
+                    mRefreshLayout.setRefreshing(false);
                     Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
-                }
+                }, 2000);
             }
-        };
-        if (mList==null){
+        });
+        if (mList == null) {
             refresh();
         }
         return view;
@@ -113,17 +107,11 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
     private void refresh() {
         mCategoryRepository.getDataFromNet(category, 10, 1, true)
                 .subscribe(list -> System.out.println(""),
-                        throwable -> Logger.e(throwable,"error in category refresh"),
+                        throwable -> Logger.e(throwable, "error in category refresh"),
                         () -> {
-                            mList=mCategoryRepository.getCategoryUrlsFromDisk(category);
-                            mCategoryAdapter.setNewData(mList);
+                            mList = mCategoryRepository.getCategoryUrlsFromDisk(category);
+                            mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mList);
+                            mRecyclerView.setAdapter(mCategoryAdapter);
                         });
     }
-
-    @Override
-    public void onRefresh() {
-        refresh();
-        mHandler.sendEmptyMessageDelayed(REFRESH_COMPLETE, 2000);
-    }
-
 }
