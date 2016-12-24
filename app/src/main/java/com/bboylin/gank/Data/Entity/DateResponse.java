@@ -1,4 +1,4 @@
-package com.bboylin.gank.Data;
+package com.bboylin.gank.Data.Entity;
 
 import java.util.List;
 

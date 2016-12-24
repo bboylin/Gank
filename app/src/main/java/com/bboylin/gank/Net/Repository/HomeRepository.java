@@ -1,10 +1,11 @@
-package com.bboylin.gank.Net;
+package com.bboylin.gank.Net.Repository;
 
 import android.content.Context;
 
-import com.bboylin.gank.Data.HomePref;
-import com.bboylin.gank.Data.HomeResponse;
+import com.bboylin.gank.Data.Treasure.HomePref;
+import com.bboylin.gank.Data.Entity.HomeResponse;
 import com.bboylin.gank.Event.HomeUpdateEvent;
+import com.bboylin.gank.Net.Refrofit.GankService;
 import com.bboylin.gank.Utils.RxBus;
 import com.orhanobut.logger.Logger;
 

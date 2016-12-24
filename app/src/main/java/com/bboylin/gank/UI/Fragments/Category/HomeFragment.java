@@ -1,4 +1,4 @@
-package com.bboylin.gank.UI.Fragments;
+package com.bboylin.gank.UI.Fragments.Category;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,13 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bboylin.gank.Data.Gank;
-import com.bboylin.gank.Data.HomePref;
-import com.bboylin.gank.Data.HomeResponse;
+import com.bboylin.gank.Data.Entity.Gank;
+import com.bboylin.gank.Data.Treasure.HomePref;
+import com.bboylin.gank.Data.Entity.HomeResponse;
 import com.bboylin.gank.Event.HomeUpdateEvent;
-import com.bboylin.gank.Net.HomeRepository;
+import com.bboylin.gank.Net.Repository.HomeRepository;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.HomeAdapter;
+import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
 import com.bboylin.gank.Utils.RxBus;
 import com.orhanobut.logger.Logger;
@@ -58,7 +59,7 @@ public class HomeFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         ButterKnife.bind(this, view);
         page = 1;
         setupToolBar("首页");
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark, R.color.colorAccent);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorAccent);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setHasFixedSize(true);

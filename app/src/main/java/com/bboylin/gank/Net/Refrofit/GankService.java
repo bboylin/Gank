@@ -1,8 +1,8 @@
-package com.bboylin.gank.Net;
+package com.bboylin.gank.Net.Refrofit;
 
-import com.bboylin.gank.Data.DateResponse;
-import com.bboylin.gank.Data.CategoryResponse;
-import com.bboylin.gank.Data.HomeResponse;
+import com.bboylin.gank.Data.Entity.DateResponse;
+import com.bboylin.gank.Data.Entity.CategoryResponse;
+import com.bboylin.gank.Data.Entity.HomeResponse;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;

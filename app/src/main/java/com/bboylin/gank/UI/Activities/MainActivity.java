@@ -11,18 +11,18 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.bboylin.gank.Data.CommonPref;
+import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.Data.ItemTypeList;
 import com.bboylin.gank.Event.UrlClickEvent;
-import com.bboylin.gank.Net.GankApi;
-import com.bboylin.gank.Net.MainRepository;
+import com.bboylin.gank.Net.Refrofit.GankApi;
+import com.bboylin.gank.Net.Repository.MainRepository;
 import com.bboylin.gank.R;
-import com.bboylin.gank.UI.Fragments.CategoryFragment;
+import com.bboylin.gank.UI.Fragments.Category.CategoryFragment;
 import com.bboylin.gank.UI.Fragments.DetailImageFragment;
 import com.bboylin.gank.UI.Fragments.DetailWebFragment;
-import com.bboylin.gank.UI.Fragments.GirlFragment;
-import com.bboylin.gank.UI.Fragments.HomeFragment;
-import com.bboylin.gank.UI.Fragments.LikeFragment;
+import com.bboylin.gank.UI.Fragments.Category.GirlFragment;
+import com.bboylin.gank.UI.Fragments.Category.HomeFragment;
+import com.bboylin.gank.UI.Fragments.Like.LikeFragment;
 import com.bboylin.gank.Utils.RxBus;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.orhanobut.logger.Logger;
@@ -120,9 +120,6 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.action_search:
                 break;
-            case android.R.id.home:
-                onBackPressed();
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }

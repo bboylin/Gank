@@ -1,4 +1,4 @@
-package com.bboylin.gank.Net;
+package com.bboylin.gank.Net.Repository;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;

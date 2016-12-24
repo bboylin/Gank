@@ -1,9 +1,11 @@
-package com.bboylin.gank.Net;
+package com.bboylin.gank.Net.Repository;
 
 import android.content.Context;
 
-import com.bboylin.gank.Data.CategoryPref;
-import com.bboylin.gank.Data.Gank;
+import com.bboylin.gank.Data.Treasure.CategoryPref;
+import com.bboylin.gank.Data.Entity.Gank;
+import com.bboylin.gank.Net.Refrofit.GankApi;
+import com.bboylin.gank.Net.Refrofit.GankService;
 
 import java.util.List;
 

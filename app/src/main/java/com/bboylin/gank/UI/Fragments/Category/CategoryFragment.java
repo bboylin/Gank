@@ -1,4 +1,4 @@
-package com.bboylin.gank.UI.Fragments;
+package com.bboylin.gank.UI.Fragments.Category;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,12 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bboylin.gank.Data.CategoryPref;
-import com.bboylin.gank.Data.CommonPref;
-import com.bboylin.gank.Data.Gank;
-import com.bboylin.gank.Net.CategoryRepository;
+import com.bboylin.gank.Data.Treasure.CategoryPref;
+import com.bboylin.gank.Data.Treasure.CommonPref;
+import com.bboylin.gank.Data.Entity.Gank;
+import com.bboylin.gank.Net.Repository.CategoryRepository;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.CategoryAdapter;
+import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.orhanobut.logger.Logger;
@@ -59,7 +60,7 @@ public class CategoryFragment extends BaseFragment implements SwipeRefreshLayout
         mCategoryPref = CategoryPref.Factory.create(getActivity());
         category = CommonPref.Factory.create(getActivity()).getCategory();
         setupToolBar(category);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark, R.color.colorAccent);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorAccent);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

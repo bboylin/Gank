@@ -9,7 +9,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.bboylin.gank.Data.CommonPref;
+import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.R;
 
 import butterknife.BindView;

@@ -1,4 +1,4 @@
-package com.bboylin.gank.UI.Fragments;
+package com.bboylin.gank.UI.Fragments.Category;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,12 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bboylin.gank.Data.CategoryPref;
-import com.bboylin.gank.Data.Gank;
-import com.bboylin.gank.Net.CategoryRepository;
-import com.bboylin.gank.Net.GankApi;
+import com.bboylin.gank.Data.Treasure.CategoryPref;
+import com.bboylin.gank.Data.Entity.Gank;
+import com.bboylin.gank.Net.Repository.CategoryRepository;
+import com.bboylin.gank.Net.Refrofit.GankApi;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.GirlAdapter;
+import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.orhanobut.logger.Logger;
 
@@ -57,7 +58,7 @@ public class GirlFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mRecyclerView.setPadding(0,0,0,0);
         mCategoryRepository =CategoryRepository.getInstance(getActivity());
         mGirlPref=CategoryPref.Factory.create(getActivity());
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark, R.color.colorAccent);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorAccent);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,RecyclerView.VERTICAL));
         mGirlAdapter=new GirlAdapter(getActivity(),R.layout.girl_item,mGirlPref.getGirlList());

@@ -1,4 +1,4 @@
-package com.bboylin.gank.Net;
+package com.bboylin.gank.Net.Refrofit;
 
 /**
  * Created by lin on 2016/11/1.

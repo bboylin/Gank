@@ -1,9 +1,10 @@
-package com.bboylin.gank.Data;
+package com.bboylin.gank.Data.Treasure;
 
 import android.content.Context;
 
 import com.baoyz.treasure.Preferences;
 import com.baoyz.treasure.Treasure;
+import com.bboylin.gank.Data.Entity.Gank;
 import com.bboylin.gank.Utils.GsonConverterFactory;
 
 import java.util.List;

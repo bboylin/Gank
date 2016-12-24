@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bboylin.gank.Data.CommonPref;
+import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Activities.MainActivity;
 import com.squareup.picasso.Picasso;

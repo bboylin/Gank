@@ -4,8 +4,8 @@ import android.content.Context;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bboylin.gank.Data.CommonPref;
-import com.bboylin.gank.Data.Gank;
+import com.bboylin.gank.Data.Treasure.CommonPref;
+import com.bboylin.gank.Data.Entity.Gank;
 import com.bboylin.gank.Event.UrlClickEvent;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Activities.MainActivity;

@@ -1,8 +1,9 @@
-package com.bboylin.gank.Net;
+package com.bboylin.gank.Net.Repository;
 
 import android.content.Context;
 
 import com.bboylin.gank.Data.ItemTypeList;
+import com.bboylin.gank.Net.Refrofit.GankApi;
 
 import java.util.ArrayList;
 import java.util.List;

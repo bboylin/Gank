@@ -1,4 +1,4 @@
-package com.bboylin.gank.UI.Fragments;
+package com.bboylin.gank.UI.Fragments.Like;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,10 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.bboylin.gank.Data.CommonPref;
-import com.bboylin.gank.Data.Gank;
+import com.bboylin.gank.Data.Treasure.CommonPref;
+import com.bboylin.gank.Data.Entity.Gank;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.CategoryAdapter;
+import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class LikeCategoryFragment extends BaseFragment implements SwipeRefreshLa
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(new SimpleItemDecoration(0));
         mRecyclerView.setAdapter(mCategoryAdapter);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark, R.color.colorAccent);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimary, R.color.colorAccent);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mHandler = new Handler() {
             @Override

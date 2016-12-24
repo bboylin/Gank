@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Fragments.DetailImageFragment;
 import com.bboylin.gank.UI.Fragments.DetailWebFragment;
-import com.bboylin.gank.UI.Fragments.LikeFragment;
+import com.bboylin.gank.UI.Fragments.Like.LikeFragment;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
