@@ -52,5 +52,6 @@ dependencies {
     compile 'com.ogaclejapan.smarttablayout:utils-v4:1.6.1@aar'
     //compile 'com.github.jd-alexander:LikeButton:0.2.0'
     compile 'com.baoyz.treasure:treasure:0.7.1'
+    //compile 'com.github.delight-im:Android-AdvancedWebView:v3.0.0'
     annotationProcessor 'com.baoyz.treasure:treasure-compiler:0.7.1'
 }

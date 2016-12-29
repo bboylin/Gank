@@ -1,5 +1,6 @@
 package com.bboylin.gank.UI.Fragments;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.webkit.WebViewClient;
 
 import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.R;
+import com.bboylin.gank.UI.Widget.MyProgressDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +25,7 @@ public class DetailWebFragment extends BaseFragment {
     private static volatile DetailWebFragment sDetailWebFragment = null;
     @BindView(R.id.detail_webView)
     WebView mWebView;
+    ProgressDialog progressDialog;
 
     public DetailWebFragment() {
         tag = "web";
@@ -51,6 +54,7 @@ public class DetailWebFragment extends BaseFragment {
         webSettings.setSupportZoom(true);
         mWebView.setWebViewClient(new MyWeebViewClient());
         mWebView.loadUrl(CommonPref.Factory.create(getContext()).getWebViewUrl());
+        showProgressDialog("正在加载中","请稍候");
         return view;
     }
 
@@ -59,6 +63,30 @@ public class DetailWebFragment extends BaseFragment {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
             return true;
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            cancelProgressDialog();
+        }
+    }
+
+    public void showProgressDialog(String title, String message) {
+        if (progressDialog == null) {
+            progressDialog = MyProgressDialog.initProgressDialog(getContext(), title, message);
+            progressDialog.show();
+        } else {
+            if (!progressDialog.isShowing()) {
+                progressDialog.show();
+            }
+        }
+    }
+
+    //隐藏ProgressDialog
+    public void cancelProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 }
