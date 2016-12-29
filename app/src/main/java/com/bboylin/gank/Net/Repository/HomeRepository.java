@@ -83,4 +83,8 @@ public class HomeRepository extends BaseRepository {
                 .filter(todayResponse -> todayResponse.error == false)
                 .map(todayResponse -> todayResponse.results);
     }
+
+    public void clear(){
+        mHomePref.clear();
+    }
 }

@@ -68,4 +68,8 @@ public class CategoryRepository extends BaseRepository {
         }
         return null;
     }
+
+    public void clear(){
+        mCategoryPref.clear();
+    }
 }

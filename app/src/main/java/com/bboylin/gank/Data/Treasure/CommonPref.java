@@ -2,6 +2,7 @@ package com.bboylin.gank.Data.Treasure;
 
 import android.content.Context;
 
+import com.baoyz.treasure.Clear;
 import com.baoyz.treasure.Preferences;
 import com.baoyz.treasure.Treasure;
 import com.bboylin.gank.Data.Entity.Gank;
@@ -27,6 +28,9 @@ public interface CommonPref {
     void setLikeItems(List<Gank> likeItems);
 
     List<Gank> getLikeItems();
+
+    @Clear
+    void clear();
 
     class Factory {
         public static CommonPref create(Context context) {

@@ -29,16 +29,16 @@
             android:title="收藏"/>
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="More">
         <menu>
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_menu_about"
                 android:title="@string/nav_about"/>
             <item
-                android:id="@+id/nav_feedback"
-                android:icon="@drawable/ic_menu_feedback"
-                android:title="@string/nav_feedback"/>
+                android:id="@+id/nav_clear_cache"
+                android:icon="@drawable/ic_cached_black_18dp"
+                android:title="@string/nav_clear_cache"/>
         </menu>
     </item>
 

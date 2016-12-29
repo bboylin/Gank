@@ -5,26 +5,26 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.Data.ItemTypeList;
+import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.Event.UrlClickEvent;
 import com.bboylin.gank.Net.Refrofit.GankApi;
 import com.bboylin.gank.Net.Repository.MainRepository;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Fragments.Category.CategoryFragment;
-import com.bboylin.gank.UI.Fragments.DetailImageFragment;
-import com.bboylin.gank.UI.Fragments.DetailWebFragment;
 import com.bboylin.gank.UI.Fragments.Category.GirlFragment;
 import com.bboylin.gank.UI.Fragments.Category.HomeFragment;
+import com.bboylin.gank.UI.Fragments.DetailImageFragment;
+import com.bboylin.gank.UI.Fragments.DetailWebFragment;
 import com.bboylin.gank.UI.Fragments.Like.LikeFragment;
 import com.bboylin.gank.Utils.RxBus;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
@@ -33,8 +33,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.search_view)
-    MaterialSearchView searchView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
@@ -52,7 +50,6 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        initSearchView();
         mMainRepository = MainRepository.getInstance(this);
         mCommonPref = CommonPref.Factory.create(this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -87,28 +84,9 @@ public class MainActivity extends BaseActivity
                 }, throwable -> Toast.makeText(this, "出错了", Toast.LENGTH_SHORT));
     }
 
-    private void initSearchView() {
-        searchView.setVoiceSearch(false);
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                //Do some magic
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                //Do some magic
-                return false;
-            }
-        });
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
         return true;
     }
 
@@ -117,8 +95,6 @@ public class MainActivity extends BaseActivity
         switch (item.getItemId()) {
             case R.id.action_share:
                 Toast.makeText(this, "share", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.action_search:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -165,10 +141,19 @@ public class MainActivity extends BaseActivity
                 //startActivity(new Intent(MainActivity.this,LikeFragment.class));
                 break;
             case R.id.nav_about:
-                Toast.makeText(this, "about is under construction", Toast.LENGTH_LONG).show();
+                mCommonPref.setWebViewUrl("https://github.com/bboylin/gank/");
+                replaceFragment(DetailWebFragment.getInstance(), R.id.fragment_container);
                 break;
-            case R.id.nav_feedback:
-                Toast.makeText(this, "feedback is under construction", Toast.LENGTH_LONG).show();
+            case R.id.nav_clear_cache:
+                new AlertDialog.Builder(this).setTitle("提示")
+                        .setMessage("确定要清空缓存吗？此操作不会清空收藏数据")
+                        .setPositiveButton("确定",((dialog, which) -> {
+                            mMainRepository.clear();
+                            Toast.makeText(this, "缓存已清空", Toast.LENGTH_SHORT).show();
+                        }))
+                        .setNegativeButton("取消",((dialog, which) -> {}))
+                        .create()
+                        .show();
                 break;
         }
 

@@ -2,6 +2,7 @@ package com.bboylin.gank.Data.Treasure;
 
 import android.content.Context;
 
+import com.baoyz.treasure.Clear;
 import com.baoyz.treasure.Preferences;
 import com.baoyz.treasure.Treasure;
 import com.bboylin.gank.Data.Entity.DateResponse;
@@ -22,6 +23,9 @@ public interface HomePref {
     void setTodayResponse(HomeResponse homeResponse);
 
     HomeResponse getTodayResponse();
+
+    @Clear
+    void clear();
 
     class Factory {
         public static HomePref create(Context context) {

@@ -2,6 +2,7 @@ package com.bboylin.gank.Data.Treasure;
 
 import android.content.Context;
 
+import com.baoyz.treasure.Clear;
 import com.baoyz.treasure.Preferences;
 import com.baoyz.treasure.Treasure;
 import com.bboylin.gank.Data.Entity.Gank;
@@ -31,6 +32,9 @@ public interface CategoryPref {
     void setGirlList(List<Gank> list);
 
     List<Gank> getGirlList();
+
+    @Clear
+    void clear();
 
     class Factory {
         public static CategoryPref create(Context context) {

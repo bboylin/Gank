@@ -75,4 +75,9 @@ public class MainRepository extends BaseRepository {
         }
         return observable;
     }
+
+    public void clear(){
+        mCategoryRepository.clear();
+        mHomeRepository.clear();
+    }
 }
