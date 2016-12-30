@@ -148,7 +148,7 @@ public class MainActivity extends BaseActivity
                 gank.url="https://github.com/bboylin/gank/blob/master/README.md";
                 gank.desc="关于";
                 mCommonPref.setWebViewGank(gank);
-                replaceFragment(DetailWebFragment.getInstance(), R.id.fragment_container);
+                replaceFragment(new DetailWebFragment(), R.id.fragment_container);
                 break;
             case R.id.nav_clear_cache:
                 new AlertDialog.Builder(this).setTitle("提示")
