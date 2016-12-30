@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.Data.Entity.Gank;
-import com.bboylin.gank.Event.UrlClickEvent;
+import com.bboylin.gank.Event.GankClickEvent;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Activities.MainActivity;
 import com.bboylin.gank.Utils.RxBus;
@@ -52,13 +52,13 @@ public class GirlAdapter extends BaseQuickAdapter<Gank> {
                 starImageView.setImageResource(R.drawable.ic_favorite_white_24dp);
                 List<Gank> list = new ArrayList<>();
                 list.addAll(mCommonPref.getLikeItems());
-                list.add(gank);
+                list.add(0,gank);
                 mCommonPref.setLikeItems(list);
                 Toast.makeText(mContext, "已收藏", Toast.LENGTH_SHORT).show();
             }
         })
                 .setText(R.id.tvShowTime, gank.publishedAt.split("T")[0])
-                .setOnClickListener(R.id.girl_image, v -> RxBus.getDefault().post(new UrlClickEvent(gank.url, UrlClickEvent.IMAGE)));
+                .setOnClickListener(R.id.girl_image, v -> RxBus.getDefault().post(new GankClickEvent(gank, GankClickEvent.IMAGE)));
         Picasso.with(mContext)
                 .load(gank.url)
                 .resize(MainActivity.screenWidth / 2 - 2, (int) ((float) MainActivity.screenWidth / 1.618f))

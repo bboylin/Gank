@@ -12,9 +12,10 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.bboylin.gank.Data.Entity.Gank;
 import com.bboylin.gank.Data.ItemTypeList;
 import com.bboylin.gank.Data.Treasure.CommonPref;
-import com.bboylin.gank.Event.UrlClickEvent;
+import com.bboylin.gank.Event.GankClickEvent;
 import com.bboylin.gank.Net.Refrofit.GankApi;
 import com.bboylin.gank.Net.Repository.MainRepository;
 import com.bboylin.gank.R;
@@ -24,6 +25,7 @@ import com.bboylin.gank.UI.Fragments.Category.HomeFragment;
 import com.bboylin.gank.UI.Fragments.DetailImageFragment;
 import com.bboylin.gank.UI.Fragments.DetailWebFragment;
 import com.bboylin.gank.UI.Fragments.Like.LikeFragment;
+import com.bboylin.gank.UI.Widget.ShareBottomDialog;
 import com.bboylin.gank.Utils.RxBus;
 import com.orhanobut.logger.Logger;
 
@@ -69,15 +71,15 @@ public class MainActivity extends BaseActivity
     }
 
     private void register() {
-        RxBus.getDefault().toObserverable(UrlClickEvent.class)
+        RxBus.getDefault().toObserverable(GankClickEvent.class)
                 .compose(applySchedulers())
-                .doOnNext(urlClickEvent -> mCommonPref.setWebViewUrl(urlClickEvent.url))
-                .subscribe(urlClickEvent -> {
-                    switch (urlClickEvent.type) {
-                        case UrlClickEvent.TEXT:
+                .doOnNext(gankClickEvent -> mCommonPref.setWebViewGank(gankClickEvent.mGank))
+                .subscribe(gankClickEvent -> {
+                    switch (gankClickEvent.type) {
+                        case GankClickEvent.TEXT:
                             replaceFragment(DetailWebFragment.getInstance(), R.id.fragment_container);
                             break;
-                        case UrlClickEvent.IMAGE:
+                        case GankClickEvent.IMAGE:
                             replaceFragment(DetailImageFragment.getInstance(), R.id.fragment_container);
                             break;
                     }
@@ -94,7 +96,8 @@ public class MainActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_share:
-                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show();
+                ShareBottomDialog dialog = new ShareBottomDialog();
+                dialog.show(getSupportFragmentManager());
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -141,7 +144,10 @@ public class MainActivity extends BaseActivity
                 //startActivity(new Intent(MainActivity.this,LikeFragment.class));
                 break;
             case R.id.nav_about:
-                mCommonPref.setWebViewUrl("https://github.com/bboylin/gank/");
+                Gank gank=new Gank();
+                gank.url="https://github.com/bboylin/gank/blob/master/README.md";
+                gank.desc="关于";
+                mCommonPref.setWebViewGank(gank);
                 replaceFragment(DetailWebFragment.getInstance(), R.id.fragment_container);
                 break;
             case R.id.nav_clear_cache:

@@ -3,6 +3,7 @@ package com.bboylin.gank.Data.Treasure;
 import android.content.Context;
 
 import com.baoyz.treasure.Clear;
+import com.baoyz.treasure.Default;
 import com.baoyz.treasure.Preferences;
 import com.baoyz.treasure.Treasure;
 import com.bboylin.gank.Data.Entity.Gank;
@@ -17,9 +18,9 @@ import java.util.List;
 @Preferences
 public interface CommonPref {
 
-    void setWebViewUrl(String webViewUrl);
+    void setWebViewGank(Gank gank);
 
-    String getWebViewUrl();
+    Gank getWebViewGank();
 
     void setCategory(String category);
 
@@ -28,6 +29,11 @@ public interface CommonPref {
     void setLikeItems(List<Gank> likeItems);
 
     List<Gank> getLikeItems();
+
+    void setFirstImage(boolean first);
+
+    @Default("true")
+    boolean getFirstImage();
 
     @Clear
     void clear();

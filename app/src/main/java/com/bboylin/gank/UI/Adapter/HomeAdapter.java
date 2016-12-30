@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.Data.Entity.Gank;
-import com.bboylin.gank.Event.UrlClickEvent;
+import com.bboylin.gank.Event.GankClickEvent;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Activities.MainActivity;
 import com.bboylin.gank.Utils.RxBus;
@@ -74,7 +74,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             NormalViewHolder normalViewHolder = (NormalViewHolder) holder;
             Gank gank = mList.get(position);
             normalViewHolder.itemView.setOnClickListener(v ->
-                    RxBus.getDefault().post(new UrlClickEvent(gank.url,UrlClickEvent.TEXT)));
+                    RxBus.getDefault().post(new GankClickEvent(gank, GankClickEvent.TEXT)));
             normalViewHolder.dateTextView.setText(gank.publishedAt.split("T")[0]);
             normalViewHolder.typeTextView.setText("分类:" + gank.type);
             normalViewHolder.titleTextView.setText(gank.desc);
@@ -91,7 +91,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }else {
                     normalViewHolder.starImageView.setImageResource(R.drawable.ic_favorite_black_24dp);
                     List<Gank> list=mCommonPref.getLikeItems();
-                    list.add(gank);
+                    list.add(0,gank);
                     mCommonPref.setLikeItems(list);
                     Toast.makeText(mContext,"已收藏",Toast.LENGTH_SHORT).show();
                 }
@@ -99,7 +99,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (holder instanceof ImageViewHolder) {
             ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
             String url=mList.get(position).url;
-            imageViewHolder.itemView.setOnClickListener(v -> RxBus.getDefault().post(new UrlClickEvent(url,UrlClickEvent.IMAGE)));
+            imageViewHolder.itemView.setOnClickListener(v -> RxBus.getDefault().post(new GankClickEvent(mList.get(position), GankClickEvent.IMAGE)));
             Picasso.with(mContext)
                     .load(url)
                     .resize(MainActivity.screenWidth,(int)((float)MainActivity.screenWidth/1.618f))

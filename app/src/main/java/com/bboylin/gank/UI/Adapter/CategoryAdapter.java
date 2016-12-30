@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.Data.Entity.Gank;
-import com.bboylin.gank.Event.UrlClickEvent;
+import com.bboylin.gank.Event.GankClickEvent;
 import com.bboylin.gank.R;
 import com.bboylin.gank.Utils.RxBus;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -50,11 +50,11 @@ public class CategoryAdapter extends BaseQuickAdapter<Gank> {
                     }else {
                         starImageView.setImageResource(R.drawable.ic_favorite_black_24dp);
                         List<Gank> list=mCommonPref.getLikeItems();
-                        list.add(gank);
+                        list.add(0,gank);
                         mCommonPref.setLikeItems(list);
                         Toast.makeText(mContext,"已收藏",Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setOnClickListener(R.id.category_title,v -> RxBus.getDefault().post(new UrlClickEvent(gank.url,UrlClickEvent.TEXT)));
+                .setOnClickListener(R.id.category_title,v -> RxBus.getDefault().post(new GankClickEvent(gank, GankClickEvent.TEXT)));
     }
 }

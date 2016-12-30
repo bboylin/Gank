@@ -1,7 +1,8 @@
 # Gank
 ---
 
-gank.io的客户端，采用RxBus+RxJava+Retrofit，欢迎一起来完善它。APK下载地址:[http://fir.im/3t7j](http://fir.im/3t7j)
+gank.io的客户端，采用RxBus+RxJava+Retrofit，欢迎一起来完善它。（暂不支持图片分享）
+APK下载地址:[http://fir.im/3t7j](http://fir.im/3t7j)
 
 <img src="./pics/1.jpg" width = "324" height = "576" alt="图片"/>
 <img src="./pics/2.jpg" width = "324" height = "576" alt="图片"/>
@@ -11,10 +12,3 @@ gank.io的客户端，采用RxBus+RxJava+Retrofit，欢迎一起来完善它。A
 
 <img src="./pics/5.jpg" width = "324" height = "576" alt="图片"/>
 <img src="./pics/6.jpg" width = "324" height = "576" alt="图片"/>
-
----
-
-to do :
-
- - [ ] 社交分享
- - [ ] 图片保存

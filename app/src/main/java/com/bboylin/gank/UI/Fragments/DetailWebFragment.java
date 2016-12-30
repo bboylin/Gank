@@ -47,13 +47,13 @@ public class DetailWebFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_web, container, false);
         ButterKnife.bind(this, view);
-        setupToolBar("阅读");
+        setupToolBar(CommonPref.Factory.create(getActivity()).getWebViewGank().desc);
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setSupportZoom(true);
         mWebView.setWebViewClient(new MyWeebViewClient());
-        mWebView.loadUrl(CommonPref.Factory.create(getContext()).getWebViewUrl());
+        mWebView.loadUrl(CommonPref.Factory.create(getContext()).getWebViewGank().url);
         showProgressDialog("正在加载中","请稍候");
         return view;
     }
