@@ -67,8 +67,9 @@ public class DetailImageFragment extends BaseFragment {
                 .into(mImageView);
         mImageView.setOnLongClickListener(v -> {
             saveImage();
-            return true;
+           return true;
         });
+        mImageView.setOnClickListener(v -> getActivity().onBackPressed());
         return view;
     }
 
