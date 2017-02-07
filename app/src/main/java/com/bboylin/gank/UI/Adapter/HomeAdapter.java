@@ -113,9 +113,8 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return null == mList ? 0 : mList.size();
     }
 
-    public void addDataInFront(List<Gank> dataList) {
-        dataList.addAll(mList);
-        mList = dataList;
+    public void addData(List<Gank> dataList) {
+        mList.addAll(dataList);
         notifyDataSetChanged();
     }
 

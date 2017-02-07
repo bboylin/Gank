@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +46,7 @@ public class HomeFragment extends BaseFragment {
     private Calendar mCalendar;
     private HomeRepository mHomeRepository;
     private int page;
+    private boolean ableToLoadMore = true;
 
     @Nullable
     @Override
@@ -78,24 +78,24 @@ public class HomeFragment extends BaseFragment {
                 }, 2000);
             }
         });
-        showLocalData();
-        loadMore();
+        showLocalData(true);
+        setLoadMoreListener();
         return view;
     }
 
     private void register() {
         RxBus.getDefault().toObserverable(HomeUpdateEvent.class)
                 .compose(applySchedulers())
-                .subscribe(todayEvent -> showLocalData());
+                .subscribe(todayEvent -> showLocalData(true));
     }
 
-    private void showLocalData() {
+    private void showLocalData(boolean reset) {
         if (mHomePref.getTodayResponse() != null) {
-            setupRecyclerView(getDataList(mHomeRepository.getTodayDataFromDisk()));
+            setupRecyclerView(getDataList(mHomeRepository.getTodayDataFromDisk()), reset);
         }
     }
 
-    public void loadMore() {
+    public void setLoadMoreListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -111,8 +111,11 @@ public class HomeFragment extends BaseFragment {
                 if ((visible + past) >= total) {
                     //加载更多
                     if (networkConnected()) {
-                        loadPage(page);
-                        page++;
+                        if (ableToLoadMore) {
+                            ableToLoadMore = false;
+                            loadPage(page);
+                            page++;
+                        }
                     } else {
                         Toast.makeText(getContext(), "网络无连接", Toast.LENGTH_SHORT).show();
                     }
@@ -126,9 +129,9 @@ public class HomeFragment extends BaseFragment {
             String[] date = mHomePref.getDateResponse().results.get(i).split("-");
             mHomeRepository.loadMore(Integer.parseInt(date[0]),
                     Integer.parseInt(date[1]), Integer.parseInt(date[2]))
-                    .subscribe(result -> setupRecyclerView(getDataList(result)),
+                    .subscribe(result -> setupRecyclerView(getDataList(result), false),
                             throwable -> Logger.e(throwable, date + "数据加载失败"),
-                            () -> Log.d("homefragment", "loadpage success"));
+                            () -> ableToLoadMore = true);
         } else {
             mHomeRepository.getDateListFromNet();
         }
@@ -138,12 +141,12 @@ public class HomeFragment extends BaseFragment {
         return INSTANCE;
     }
 
-    private void setupRecyclerView(List<Gank> dataList) {
-        if (mHomeAdapter == null) {
+    private void setupRecyclerView(List<Gank> dataList, boolean reset) {
+        if (mHomeAdapter == null || reset) {
             mHomeAdapter = new HomeAdapter(dataList, getContext());
             mRecyclerView.setAdapter(mHomeAdapter);
         } else {
-            mHomeAdapter.addDataInFront(dataList);
+            mHomeAdapter.addData(dataList);
         }
     }
 
