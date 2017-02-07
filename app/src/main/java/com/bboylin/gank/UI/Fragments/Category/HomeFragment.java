@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
  * Created by lin on 2016/10/29.
  */
 
-public class HomeFragment extends BaseFragment{
+public class HomeFragment extends BaseFragment {
 
     @BindView(R.id.phoenix_refresh_layout)
     PullToRefreshView mRefreshLayout;
@@ -46,7 +47,6 @@ public class HomeFragment extends BaseFragment{
     private Calendar mCalendar;
     private HomeRepository mHomeRepository;
     private int page;
-    private List<Gank> mList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -75,7 +75,7 @@ public class HomeFragment extends BaseFragment{
                         mRefreshLayout.setRefreshing(false);
                         Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
                     }
-                },2000);
+                }, 2000);
             }
         });
         showLocalData();
@@ -91,7 +91,7 @@ public class HomeFragment extends BaseFragment{
 
     private void showLocalData() {
         if (mHomePref.getTodayResponse() != null) {
-            setupRecyclerView(getDataList(mHomeRepository.getTodayDataFromDisk(), true));
+            setupRecyclerView(getDataList(mHomeRepository.getTodayDataFromDisk()));
         }
     }
 
@@ -126,9 +126,9 @@ public class HomeFragment extends BaseFragment{
             String[] date = mHomePref.getDateResponse().results.get(i).split("-");
             mHomeRepository.loadMore(Integer.parseInt(date[0]),
                     Integer.parseInt(date[1]), Integer.parseInt(date[2]))
-                    .subscribe(result -> getDataList(result, false),
-                            throwable -> Logger.e(throwable,date + "数据加载失败"),
-                            () -> setupRecyclerView(mList));
+                    .subscribe(result -> setupRecyclerView(getDataList(result)),
+                            throwable -> Logger.e(throwable, date + "数据加载失败"),
+                            () -> Log.d("homefragment", "loadpage success"));
         } else {
             mHomeRepository.getDateListFromNet();
         }
@@ -139,14 +139,16 @@ public class HomeFragment extends BaseFragment{
     }
 
     private void setupRecyclerView(List<Gank> dataList) {
-        mHomeAdapter = new HomeAdapter(dataList, getContext());
-        mRecyclerView.setAdapter(mHomeAdapter);
+        if (mHomeAdapter == null) {
+            mHomeAdapter = new HomeAdapter(dataList, getContext());
+            mRecyclerView.setAdapter(mHomeAdapter);
+        } else {
+            mHomeAdapter.addDataInFront(dataList);
+        }
     }
 
-    private List<Gank> getDataList(HomeResponse.Result result, boolean first) {
-        if (first) {
-            mList = new ArrayList<>();
-        }
+    private List<Gank> getDataList(HomeResponse.Result result) {
+        ArrayList<Gank> mList = new ArrayList<>();
         if (result != null) {
             if (result.welfareList != null) {
                 for (Gank gank : result.welfareList) {

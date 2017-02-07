@@ -39,7 +39,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         mList = list;
         mContext = context;
         mCommonPref = CommonPref.Factory.create(mContext);
-        if (mCommonPref.getLikeItems()==null){
+        if (mCommonPref.getLikeItems() == null) {
             mCommonPref.setLikeItems(new ArrayList<>());
         }
     }
@@ -78,31 +78,31 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             normalViewHolder.dateTextView.setText(gank.publishedAt.split("T")[0]);
             normalViewHolder.typeTextView.setText("分类:" + gank.type);
             normalViewHolder.titleTextView.setText(gank.desc);
-            if (mCommonPref.getLikeItems().contains(gank)){
+            if (mCommonPref.getLikeItems().contains(gank)) {
                 normalViewHolder.starImageView.setImageResource(R.drawable.ic_favorite_black_24dp);
             }
             normalViewHolder.starImageView.setOnClickListener(v -> {
-                if (mCommonPref.getLikeItems().contains(gank)){
+                if (mCommonPref.getLikeItems().contains(gank)) {
                     normalViewHolder.starImageView.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                    List<Gank> list=mCommonPref.getLikeItems();
+                    List<Gank> list = mCommonPref.getLikeItems();
                     list.remove(gank);
                     mCommonPref.setLikeItems(list);
-                    Toast.makeText(mContext,"已取消收藏",Toast.LENGTH_SHORT).show();
-                }else {
+                    Toast.makeText(mContext, "已取消收藏", Toast.LENGTH_SHORT).show();
+                } else {
                     normalViewHolder.starImageView.setImageResource(R.drawable.ic_favorite_black_24dp);
-                    List<Gank> list=mCommonPref.getLikeItems();
-                    list.add(0,gank);
+                    List<Gank> list = mCommonPref.getLikeItems();
+                    list.add(0, gank);
                     mCommonPref.setLikeItems(list);
-                    Toast.makeText(mContext,"已收藏",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "已收藏", Toast.LENGTH_SHORT).show();
                 }
             });
         } else if (holder instanceof ImageViewHolder) {
             ImageViewHolder imageViewHolder = (ImageViewHolder) holder;
-            String url=mList.get(position).url;
+            String url = mList.get(position).url;
             imageViewHolder.itemView.setOnClickListener(v -> RxBus.getDefault().post(new GankClickEvent(mList.get(position), GankClickEvent.IMAGE)));
             Picasso.with(mContext)
                     .load(url)
-                    .resize(MainActivity.screenWidth,(int)((float)MainActivity.screenWidth/1.618f))
+                    .resize(MainActivity.screenWidth, (int) ((float) MainActivity.screenWidth / 1.618f))
                     .centerCrop()
                     .into(imageViewHolder.mRatioImageView);
         }
@@ -113,27 +113,38 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return null == mList ? 0 : mList.size();
     }
 
+    public void addDataInFront(List<Gank> dataList) {
+        dataList.addAll(mList);
+        mList = dataList;
+        notifyDataSetChanged();
+    }
+
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.header_girl_image) ImageView mRatioImageView;
+        @BindView(R.id.header_girl_image)
+        ImageView mRatioImageView;
 
         public ImageViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.header_girl_image, parent, false));
-            ButterKnife.bind(this,itemView);
-            int height=(int)((float)mRatioImageView.getMaxWidth()/1.618f);
+            ButterKnife.bind(this, itemView);
+            int height = (int) ((float) mRatioImageView.getMaxWidth() / 1.618f);
             mRatioImageView.setMaxHeight(height);
         }
     }
 
     public static class NormalViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.today_title) TextView titleTextView;
-        @BindView(R.id.today_type) TextView typeTextView;
-        @BindView(R.id.today_date) TextView dateTextView;
-        @BindView(R.id.btn_star) ImageView starImageView;
+        @BindView(R.id.today_title)
+        TextView titleTextView;
+        @BindView(R.id.today_type)
+        TextView typeTextView;
+        @BindView(R.id.today_date)
+        TextView dateTextView;
+        @BindView(R.id.btn_star)
+        ImageView starImageView;
 
         public NormalViewHolder(ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.today_item, parent, false));
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
