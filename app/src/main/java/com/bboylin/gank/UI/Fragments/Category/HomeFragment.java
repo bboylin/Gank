@@ -35,18 +35,22 @@ import butterknife.ButterKnife;
 
 public class HomeFragment extends BaseFragment {
 
+    private static final HomeFragment INSTANCE = new HomeFragment();
     @BindView(R.id.phoenix_refresh_layout)
     PullToRefreshView mRefreshLayout;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private HomeAdapter mHomeAdapter;
-    private static final HomeFragment INSTANCE = new HomeFragment();
     private LinearLayoutManager mLinearLayoutManager;
     private HomePref mHomePref;
     private Calendar mCalendar;
     private HomeRepository mHomeRepository;
     private int page;
     private boolean ableToLoadMore = true;
+
+    public static HomeFragment getInstance() {
+        return INSTANCE;
+    }
 
     @Nullable
     @Override
@@ -74,6 +78,7 @@ public class HomeFragment extends BaseFragment {
                     public void run() {
                         mRefreshLayout.setRefreshing(false);
                         Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                        page = 1;
                     }
                 }, 2000);
             }
@@ -135,10 +140,6 @@ public class HomeFragment extends BaseFragment {
         } else {
             mHomeRepository.getDateListFromNet();
         }
-    }
-
-    public static HomeFragment getInstance() {
-        return INSTANCE;
     }
 
     private void setupRecyclerView(List<Gank> dataList, boolean reset) {

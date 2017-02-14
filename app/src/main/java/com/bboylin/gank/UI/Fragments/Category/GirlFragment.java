@@ -33,17 +33,21 @@ import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
  */
 
 public class GirlFragment extends BaseFragment {
+    private static final GirlFragment instance = new GirlFragment();
     @BindView(R.id.phoenix_refresh_layout)
     PullToRefreshView mRefreshLayout;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     private GirlAdapter mGirlAdapter;
-    private static final GirlFragment instance = new GirlFragment();
     private CategoryRepository mCategoryRepository;
     private CategoryPref mGirlPref;
     private int page = 1;
     private int mCurrentCounter = 0;
     private List<Gank> mList = new ArrayList<>();
+
+    public static GirlFragment getInstance() {
+        return instance;
+    }
 
     @Nullable
     @Override
@@ -88,6 +92,7 @@ public class GirlFragment extends BaseFragment {
                 mRefreshLayout.postDelayed(() -> {
                     mRefreshLayout.setRefreshing(false);
                     Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                    page = 1;
                 }, 2000);
             }
         });
@@ -107,10 +112,6 @@ public class GirlFragment extends BaseFragment {
                             mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, mGirlPref.getGirlList());
                             mRecyclerView.setAdapter(mGirlAdapter);
                         });
-    }
-
-    public static GirlFragment getInstance() {
-        return instance;
     }
 
 }

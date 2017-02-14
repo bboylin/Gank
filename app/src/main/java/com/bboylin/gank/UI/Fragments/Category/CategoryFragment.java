@@ -95,6 +95,7 @@ public class CategoryFragment extends BaseFragment {
                 mRefreshLayout.postDelayed(() -> {
                     mRefreshLayout.setRefreshing(false);
                     Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                    page = 1;
                 }, 2000);
             }
         });
