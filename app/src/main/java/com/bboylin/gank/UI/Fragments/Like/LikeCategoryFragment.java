@@ -45,6 +45,7 @@ public class LikeCategoryFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         mCommonPref = CommonPref.Factory.create(getActivity());
         category = getArguments().getString(LikeFragment.TAG);
+        mGankList.clear();
         for (Gank gank : mCommonPref.getLikeItems()) {
             if (gank.type.equals(category)) {
                 mGankList.add(gank);
@@ -70,7 +71,7 @@ public class LikeCategoryFragment extends BaseFragment {
     }
 
     public void refresh() {
-        mGankList = new ArrayList<>();
+        mGankList.clear();
         for (Gank gank : mCommonPref.getLikeItems()) {
             if (gank.type.equals(category)) {
                 mGankList.add(gank);

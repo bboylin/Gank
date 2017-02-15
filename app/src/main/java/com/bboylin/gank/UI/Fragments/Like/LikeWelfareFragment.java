@@ -42,6 +42,7 @@ public class LikeWelfareFragment extends BaseFragment{
         View view = inflater.inflate(R.layout.phoenix_fragment_recycler, container, false);
         ButterKnife.bind(this, view);
         mCommonPref = CommonPref.Factory.create(getActivity());
+        girlList.clear();
         for (Gank gank : mCommonPref.getLikeItems()) {
             if (gank.type.equals(GankApi.WELFARE)) {
                 girlList.add(gank);
