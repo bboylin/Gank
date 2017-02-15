@@ -64,6 +64,26 @@ public class CategoryFragment extends BaseFragment {
         mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mList);
         mCategoryAdapter.openLoadAnimation();
         mCategoryAdapter.openLoadMore(PAGE_SIZE, true);
+        setLoadMoreListener();
+        mRecyclerView.setAdapter(mCategoryAdapter);
+        mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+                mRefreshLayout.postDelayed(() -> {
+                    mRefreshLayout.setRefreshing(false);
+                    Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                    page = 1;
+                }, 2000);
+            }
+        });
+        if (mList == null) {
+            refresh();
+        }
+        return view;
+    }
+
+    private void setLoadMoreListener() {
         mCategoryAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
@@ -87,22 +107,6 @@ public class CategoryFragment extends BaseFragment {
                                 });
             }
         });
-        mRecyclerView.setAdapter(mCategoryAdapter);
-        mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-                mRefreshLayout.postDelayed(() -> {
-                    mRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
-                    page = 1;
-                }, 2000);
-            }
-        });
-        if (mList == null) {
-            refresh();
-        }
-        return view;
     }
 
     private void refresh() {
@@ -112,6 +116,9 @@ public class CategoryFragment extends BaseFragment {
                         () -> {
                             mList = mCategoryRepository.getCategoryUrlsFromDisk(category);
                             mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mList);
+                            mCategoryAdapter.openLoadAnimation();
+                            mCategoryAdapter.openLoadMore(PAGE_SIZE, true);
+                            setLoadMoreListener();
                             mRecyclerView.setAdapter(mCategoryAdapter);
                         });
     }

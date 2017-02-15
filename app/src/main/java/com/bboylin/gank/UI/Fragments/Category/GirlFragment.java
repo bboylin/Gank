@@ -62,6 +62,26 @@ public class GirlFragment extends BaseFragment {
         mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, mGirlPref.getGirlList());
         mGirlAdapter.openLoadAnimation();
         mGirlAdapter.openLoadMore(PAGE_SIZE, true);
+        setLoadMoreListener();
+        mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+                mRefreshLayout.postDelayed(() -> {
+                    mRefreshLayout.setRefreshing(false);
+                    Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                    page = 1;
+                }, 2000);
+            }
+        });
+        mRecyclerView.setAdapter(mGirlAdapter);
+        if (mList == null) {
+            refresh();
+        }
+        return view;
+    }
+
+    private void setLoadMoreListener() {
         mGirlAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
@@ -85,22 +105,6 @@ public class GirlFragment extends BaseFragment {
                                 });
             }
         });
-        mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-                mRefreshLayout.postDelayed(() -> {
-                    mRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
-                    page = 1;
-                }, 2000);
-            }
-        });
-        mRecyclerView.setAdapter(mGirlAdapter);
-        if (mList == null) {
-            refresh();
-        }
-        return view;
     }
 
     private void refresh() {
@@ -110,6 +114,9 @@ public class GirlFragment extends BaseFragment {
                         () -> {
                             mList = new ArrayList<>();
                             mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, mGirlPref.getGirlList());
+                            mGirlAdapter.openLoadAnimation();
+                            mGirlAdapter.openLoadMore(PAGE_SIZE, true);
+                            setLoadMoreListener();
                             mRecyclerView.setAdapter(mGirlAdapter);
                         });
     }
