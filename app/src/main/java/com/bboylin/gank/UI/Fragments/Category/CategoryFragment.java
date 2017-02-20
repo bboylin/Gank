@@ -46,6 +46,7 @@ public class CategoryFragment extends BaseFragment {
     private int mCurrentCounter = 0;
     private String category;
     private List<Gank> mList = new ArrayList<>();
+    private boolean ableToLoadMore = true;
 
     @Nullable
     @Override
@@ -70,11 +71,6 @@ public class CategoryFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 refresh();
-                mRefreshLayout.postDelayed(() -> {
-                    mRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
-                    page = 1;
-                }, 2000);
             }
         });
         if (mList == null) {
@@ -87,24 +83,27 @@ public class CategoryFragment extends BaseFragment {
         mCategoryAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                page++;
-                mCategoryRepository.getDataFromNet(category, 10, page, false)
-                        .subscribe(list -> mList.addAll(list),
-                                throwable -> Logger.e(throwable, "error in category load more"),
-                                () -> {
-                                    mRecyclerView.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (mCurrentCounter >= 100) {
-                                                mCategoryAdapter.notifyDataChangedAfterLoadMore(false);
-                                            } else {
-                                                mCategoryAdapter.notifyDataChangedAfterLoadMore(mList, true);
-                                                mCurrentCounter = mCategoryAdapter.getItemCount();
+                if (ableToLoadMore) {
+                    ableToLoadMore = false;
+                    page++;
+                    mCategoryRepository.getDataFromNet(category, 10, page, false)
+                            .subscribe(list -> mList.addAll(list),
+                                    throwable -> Logger.e(throwable, "error in category load more"),
+                                    () -> {
+                                        mRecyclerView.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (mCurrentCounter >= 1000) {
+                                                    mCategoryAdapter.notifyDataChangedAfterLoadMore(false);
+                                                } else {
+                                                    mCategoryAdapter.notifyDataChangedAfterLoadMore(mList, true);
+                                                    mCurrentCounter = mCategoryAdapter.getItemCount();
+                                                    ableToLoadMore = true;
+                                                }
                                             }
-                                        }
-
+                                        });
                                     });
-                                });
+                }
             }
         });
     }
@@ -120,6 +119,10 @@ public class CategoryFragment extends BaseFragment {
                             mCategoryAdapter.openLoadMore(PAGE_SIZE, true);
                             setLoadMoreListener();
                             mRecyclerView.setAdapter(mCategoryAdapter);
+                            ableToLoadMore = true;
+                            mRefreshLayout.setRefreshing(false);
+                            Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                            page = 1;
                         });
     }
 }

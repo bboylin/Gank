@@ -8,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.Data.Entity.Gank;
+import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.Event.GankClickEvent;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Activities.MainActivity;
@@ -80,6 +80,8 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             normalViewHolder.titleTextView.setText(gank.desc);
             if (mCommonPref.getLikeItems().contains(gank)) {
                 normalViewHolder.starImageView.setImageResource(R.drawable.ic_favorite_black_24dp);
+            }else {
+                normalViewHolder.starImageView.setImageResource(R.drawable.ic_favorite_border_black_24dp);
             }
             normalViewHolder.starImageView.setOnClickListener(v -> {
                 if (mCommonPref.getLikeItems().contains(gank)) {

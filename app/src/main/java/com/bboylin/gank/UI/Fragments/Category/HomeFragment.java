@@ -80,7 +80,7 @@ public class HomeFragment extends BaseFragment {
                         Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
                         page = 1;
                     }
-                }, 2000);
+                }, 1500);
             }
         });
         showLocalData(true);

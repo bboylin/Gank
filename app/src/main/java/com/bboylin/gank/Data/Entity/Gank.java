@@ -36,12 +36,17 @@ public class Gank {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj==null){
-            return this==null;
-        }else if (getClass()!=obj.getClass()){
+        if (obj == null) {
+            return this == null;
+        } else if (getClass() != obj.getClass()) {
             return false;
-        }else {
+        } else {
             return ((Gank) obj).url.equals(url);
         }
+    }
+
+    @Override
+    public String toString() {
+        return desc + "/" + publishedAt + "/" + type + "/" + url;
     }
 }

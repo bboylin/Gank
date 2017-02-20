@@ -44,6 +44,7 @@ public class GirlFragment extends BaseFragment {
     private int page = 1;
     private int mCurrentCounter = 0;
     private List<Gank> mList = new ArrayList<>();
+    private boolean ableToLoadMore = true;
 
     public static GirlFragment getInstance() {
         return instance;
@@ -67,11 +68,6 @@ public class GirlFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 refresh();
-                mRefreshLayout.postDelayed(() -> {
-                    mRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
-                    page = 1;
-                }, 2000);
             }
         });
         mRecyclerView.setAdapter(mGirlAdapter);
@@ -85,24 +81,28 @@ public class GirlFragment extends BaseFragment {
         mGirlAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                page++;
-                mCategoryRepository.getDataFromNet(GankApi.WELFARE, 10, page, false)
-                        .subscribe(strings -> mList.addAll(strings),
-                                throwable -> Logger.e(throwable, "error in load more"),
-                                () -> {
-                                    mRecyclerView.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (mCurrentCounter >= 1000) {
-                                                mGirlAdapter.notifyDataChangedAfterLoadMore(false);
-                                            } else {
-                                                mGirlAdapter.notifyDataChangedAfterLoadMore(mList, true);
-                                                mCurrentCounter = mGirlAdapter.getItemCount();
+                if (ableToLoadMore) {
+                    ableToLoadMore = false;
+                    page++;
+                    mCategoryRepository.getDataFromNet(GankApi.WELFARE, 10, page, false)
+                            .subscribe(strings -> mList.addAll(strings),
+                                    throwable -> Logger.e(throwable, "error in load more"),
+                                    () -> {
+                                        mRecyclerView.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (mCurrentCounter >= 1000) {
+                                                    mGirlAdapter.notifyDataChangedAfterLoadMore(false);
+                                                } else {
+                                                    mGirlAdapter.notifyDataChangedAfterLoadMore(mList, true);
+                                                    mCurrentCounter = mGirlAdapter.getItemCount();
+                                                    ableToLoadMore = true;
+                                                }
                                             }
-                                        }
 
+                                        });
                                     });
-                                });
+                }
             }
         });
     }
@@ -118,6 +118,9 @@ public class GirlFragment extends BaseFragment {
                             mGirlAdapter.openLoadMore(PAGE_SIZE, true);
                             setLoadMoreListener();
                             mRecyclerView.setAdapter(mGirlAdapter);
+                            mRefreshLayout.setRefreshing(false);
+                            Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                            page = 1;
                         });
     }
 

@@ -39,6 +39,8 @@ public class GirlAdapter extends BaseQuickAdapter<Gank> {
         ImageView starImageView = (ImageView) baseViewHolder.getView(R.id.btn_star);
         if (mCommonPref.getLikeItems().contains(gank)) {
             starImageView.setImageResource(R.drawable.ic_favorite_white_24dp);
+        }else {
+            starImageView.setImageResource(R.drawable.ic_favorite_border_white_24dp);
         }
         baseViewHolder.setOnClickListener(R.id.btn_star, v -> {
             if (mCommonPref.getLikeItems().contains(gank)) {

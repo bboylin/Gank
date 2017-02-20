@@ -36,6 +36,8 @@ public class CategoryAdapter extends BaseQuickAdapter<Gank> {
         ImageView starImageView = (ImageView) baseViewHolder.getView(R.id.btn_star);
         if (mCommonPref.getLikeItems().contains(gank)){
             starImageView.setImageResource(R.drawable.ic_favorite_black_24dp);
+        }else {
+            starImageView.setImageResource(R.drawable.ic_favorite_border_black_24dp);
         }
         baseViewHolder.setText(R.id.category_title,gank.desc)
                 .setText(R.id.category_who,gank.who)
