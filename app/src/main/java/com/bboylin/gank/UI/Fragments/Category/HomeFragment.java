@@ -12,13 +12,11 @@ import android.widget.Toast;
 import com.bboylin.gank.Data.Entity.Gank;
 import com.bboylin.gank.Data.Entity.HomeResponse;
 import com.bboylin.gank.Data.Treasure.HomePref;
-import com.bboylin.gank.Event.HomeUpdateEvent;
 import com.bboylin.gank.Net.Repository.HomeRepository;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.HomeAdapter;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
-import com.bboylin.gank.Utils.RxBus;
 import com.orhanobut.logger.Logger;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -29,7 +27,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.Subscriber;
 
 /**
  * Created by lin on 2016/10/29.
@@ -64,7 +61,6 @@ public class HomeFragment extends BaseFragment {
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setHasFixedSize(true);
         mHomeRepository = HomeRepository.getInstance(getContext());
-        //register();
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(new SimpleItemDecoration(0));
@@ -85,7 +81,6 @@ public class HomeFragment extends BaseFragment {
                                 });
             }
         });
-        //showLocalData(true);
         initData();
         setLoadMoreListener();
         return view;
@@ -102,22 +97,12 @@ public class HomeFragment extends BaseFragment {
         });
         Observable<HomeResponse> net = mHomeRepository.getDateListFromNet();
         Observable.concat(disk, net)
+                .first()
+                .compose(applySchedulers())
                 .map(homeResponse -> homeResponse.results)
                 .subscribe(result -> setupRecyclerView(getDataList(result), true),
                         throwable -> Logger.e(throwable, "onError"),
                         () -> Logger.d("onCompleted"));
-    }
-
-    private void register() {
-        RxBus.getDefault().toObserverable(HomeUpdateEvent.class)
-                .compose(applySchedulers())
-                .subscribe(todayEvent -> showLocalData(true));
-    }
-
-    private void showLocalData(boolean reset) {
-        if (mHomePref.getTodayResponse() != null) {
-            setupRecyclerView(getDataList(mHomeRepository.getTodayDataFromDisk()), reset);
-        }
     }
 
     public void setLoadMoreListener() {

@@ -4,10 +4,7 @@ import android.content.Context;
 
 import com.bboylin.gank.Data.Treasure.HomePref;
 import com.bboylin.gank.Data.Entity.HomeResponse;
-import com.bboylin.gank.Event.HomeUpdateEvent;
 import com.bboylin.gank.Net.Refrofit.GankService;
-import com.bboylin.gank.Utils.RxBus;
-import com.orhanobut.logger.Logger;
 
 import rx.Observable;
 
@@ -19,8 +16,7 @@ public class HomeRepository extends BaseRepository {
     private static volatile HomeRepository sHomeRepository;
     HomePref mHomePref;
     GankService mGankService;
-    String[] date;
-    public static boolean update = false;
+    public boolean update = false;
 
     private HomeRepository(Context context) {
         mHomePref = HomePref.Factory.create(context);
@@ -70,14 +66,6 @@ public class HomeRepository extends BaseRepository {
                     mHomePref.setTodayResponse(homeResponse);
                     update = false;
                 });
-    }
-
-    public HomeResponse.Result getTodayDataFromDisk() {
-        if (mHomePref.getTodayResponse() != null) {
-            return mHomePref.getTodayResponse().results;
-        }
-        HomeResponse.Result result = new HomeResponse.Result();
-        return result;
     }
 
     public Observable<HomeResponse.Result> loadMore(int year, int month, int day) {
