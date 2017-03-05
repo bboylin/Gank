@@ -38,35 +38,38 @@ public class HomeRepository extends BaseRepository {
         return sHomeRepository;
     }
 
-    public void getDateListFromNet() {
-        mGankService.getHistoryDate()
+    public Observable<HomeResponse> getDateListFromNet() {
+        return mGankService.getHistoryDate()
                 .compose(applySchedulers())
                 .filter(dateResponse -> dateResponse.error == false)
                 .doOnNext(dateResponse -> update = (dateResponse != null && dateResponse != mHomePref.getDateResponse()))
-                .doOnNext(dateResponse -> mHomePref.setDateResponse(dateResponse))
+                .doOnNext(dateResponse -> {
+                    if (update) {
+                        mHomePref.setDateResponse(dateResponse);
+                    }
+                })
                 .map(dateResponse -> dateResponse.results)
                 .map(strings -> strings.get(0))
-                .subscribe(s -> date = s.split("-"),
-                        throwable -> Logger.e(throwable, "xyz error in get date"),
-                        () -> {
-                            if (update) {
-                                getTodayDataFromNet(Integer.parseInt(date[0]),
-                                        Integer.parseInt(date[1]), Integer.parseInt(date[2]));
-                            }else {
-                                RxBus.getDefault().post(new HomeUpdateEvent());
-                            }
-                        });
+                .flatMap(s -> getTodayDataFromNet(s, update));
     }
 
-    public void getTodayDataFromNet(int year, int month, int day) {
-        GankService.Factory.getInstance().getTodayData(year, month, day)
+    public Observable<HomeResponse> getTodayDataFromNet(String date, boolean update) {
+        if (date != null && update) {
+            String[] dates = date.split("-");
+            return getTodayDataFromNet(Integer.parseInt(dates[0]),
+                    Integer.parseInt(dates[1]), Integer.parseInt(dates[2]));
+        }
+        return null;
+    }
+
+    public Observable<HomeResponse> getTodayDataFromNet(int year, int month, int day) {
+        return GankService.Factory.getInstance().getTodayData(year, month, day)
                 .compose(applySchedulers())
-                .filter(todayResponse -> todayResponse.error == false)
-                .subscribe(todayResponse -> {
-                            mHomePref.setTodayResponse(todayResponse);
-                            update = false;
-                        }, throwable -> Logger.e(throwable, "xyzdataerror---")
-                        , () -> RxBus.getDefault().post(new HomeUpdateEvent()));
+                .filter(homeResponse -> homeResponse.error == false)
+                .doOnNext(homeResponse -> {
+                    mHomePref.setTodayResponse(homeResponse);
+                    update = false;
+                });
     }
 
     public HomeResponse.Result getTodayDataFromDisk() {
@@ -77,14 +80,14 @@ public class HomeRepository extends BaseRepository {
         return result;
     }
 
-    public Observable<HomeResponse.Result> loadMore(int year, int month, int day){
+    public Observable<HomeResponse.Result> loadMore(int year, int month, int day) {
         return GankService.Factory.getInstance().getTodayData(year, month, day)
                 .compose(applySchedulers())
                 .filter(todayResponse -> todayResponse.error == false)
                 .map(todayResponse -> todayResponse.results);
     }
 
-    public void clear(){
+    public void clear() {
         mHomePref.clear();
     }
 }

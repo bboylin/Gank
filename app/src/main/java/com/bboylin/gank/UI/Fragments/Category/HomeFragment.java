@@ -28,6 +28,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by lin on 2016/10/29.
@@ -62,7 +64,7 @@ public class HomeFragment extends BaseFragment {
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setHasFixedSize(true);
         mHomeRepository = HomeRepository.getInstance(getContext());
-        register();
+        //register();
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(new SimpleItemDecoration(0));
@@ -72,20 +74,38 @@ public class HomeFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 //下拉刷新
-                mHomeRepository.getDateListFromNet();
-                mRefreshLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRefreshLayout.setRefreshing(false);
-                        Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
-                        page = 1;
-                    }
-                }, 1500);
+                mHomeRepository.getDateListFromNet()
+                        .map(homeResponse -> homeResponse.results)
+                        .subscribe(result -> setupRecyclerView(getDataList(result), true),
+                                throwable -> Logger.e(throwable, "onError"),
+                                () -> {
+                                    mRefreshLayout.setRefreshing(false);
+                                    Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                                    page = 1;
+                                });
             }
         });
-        showLocalData(true);
+        //showLocalData(true);
+        initData();
         setLoadMoreListener();
         return view;
+    }
+
+    private void initData() {
+        Observable<HomeResponse> disk = Observable.create(subscriber -> {
+            HomeResponse mHomeResponse = mHomePref.getTodayResponse();
+            if (mHomeResponse == null) {
+                subscriber.onCompleted();
+            } else {
+                subscriber.onNext(mHomeResponse);
+            }
+        });
+        Observable<HomeResponse> net = mHomeRepository.getDateListFromNet();
+        Observable.concat(disk, net)
+                .map(homeResponse -> homeResponse.results)
+                .subscribe(result -> setupRecyclerView(getDataList(result), true),
+                        throwable -> Logger.e(throwable, "onError"),
+                        () -> Logger.d("onCompleted"));
     }
 
     private void register() {
@@ -137,8 +157,6 @@ public class HomeFragment extends BaseFragment {
                     .subscribe(result -> setupRecyclerView(getDataList(result), false),
                             throwable -> Logger.e(throwable, date + "数据加载失败"),
                             () -> ableToLoadMore = true);
-        } else {
-            mHomeRepository.getDateListFromNet();
         }
     }
 
