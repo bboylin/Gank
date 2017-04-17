@@ -40,9 +40,9 @@ public class ShareBottomDialog extends BaseBottomDialog implements View.OnClickL
         v.findViewById(R.id.share_wx_timeline).setOnClickListener(this);
         if (BaseActivity.fragmentTag.equals("home")) {
             type = APP;
-        } else if (BaseActivity.fragmentTag.equals(DetailImageFragment.getInstance().tag)) {
+        } else if (BaseActivity.fragmentTag.equals("image")) {
             type = IMAGE;
-        } else if (BaseActivity.fragmentTag.equals(DetailWebFragment.getInstance().tag)) {
+        } else if (BaseActivity.fragmentTag.equals("web")) {
             type = WEBURL;
         } else {
             type = -1;

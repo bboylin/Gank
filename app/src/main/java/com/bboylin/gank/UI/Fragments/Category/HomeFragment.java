@@ -33,8 +33,6 @@ import rx.Observable;
  */
 
 public class HomeFragment extends BaseFragment {
-
-    private static final HomeFragment INSTANCE = new HomeFragment();
     @BindView(R.id.phoenix_refresh_layout)
     PullToRefreshView mRefreshLayout;
     @BindView(R.id.recycler_view)
@@ -46,10 +44,6 @@ public class HomeFragment extends BaseFragment {
     private HomeRepository mHomeRepository;
     private int page;
     private boolean ableToLoadMore = true;
-
-    public static HomeFragment getInstance() {
-        return INSTANCE;
-    }
 
     @Nullable
     @Override
@@ -98,8 +92,8 @@ public class HomeFragment extends BaseFragment {
         Observable<HomeResponse> net = mHomeRepository.getDateListFromNet();
         Observable.concat(disk, net)
                 .first()
-                .compose(applySchedulers())
                 .map(homeResponse -> homeResponse.results)
+                .compose(applySchedulers())
                 .subscribe(result -> setupRecyclerView(getDataList(result), true),
                         throwable -> Logger.e(throwable, "onError"),
                         () -> Logger.d("onCompleted"));

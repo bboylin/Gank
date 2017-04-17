@@ -62,7 +62,7 @@ public class MainActivity extends BaseActivity
                 .subscribe(o -> Logger.d(o),
                         throwable -> Logger.e(throwable, "error in main http queue"),
                         () -> Logger.d("finish"));
-        replaceFragment(HomeFragment.getInstance(), R.id.fragment_container);
+        replaceFragment(new HomeFragment(), R.id.fragment_container);
         navigationView.setNavigationItemSelectedListener(this);
         register();
         WindowManager mWindowManager = this.getWindowManager();
@@ -72,15 +72,15 @@ public class MainActivity extends BaseActivity
 
     private void register() {
         RxBus.getDefault().toObserverable(GankClickEvent.class)
-                .compose(applySchedulers())
                 .doOnNext(gankClickEvent -> mCommonPref.setWebViewGank(gankClickEvent.mGank))
+                .compose(applySchedulers())
                 .subscribe(gankClickEvent -> {
                     switch (gankClickEvent.type) {
                         case GankClickEvent.TEXT:
-                            replaceFragment(DetailWebFragment.getInstance(), R.id.fragment_container);
+                            replaceFragment(new DetailWebFragment(), R.id.fragment_container);
                             break;
                         case GankClickEvent.IMAGE:
-                            replaceFragment(DetailImageFragment.getInstance(), R.id.fragment_container);
+                            replaceFragment(new DetailImageFragment(), R.id.fragment_container);
                             break;
                     }
                 }, throwable -> Toast.makeText(this, "出错了", Toast.LENGTH_SHORT));
@@ -122,7 +122,7 @@ public class MainActivity extends BaseActivity
 
         switch (item.getItemId()) {
             case R.id.nav_today:
-                replaceFragment(HomeFragment.getInstance(), R.id.fragment_container);
+                replaceFragment(new HomeFragment(), R.id.fragment_container);
                 break;
             case R.id.nav_android:
                 mCommonPref.setCategory(GankApi.ANDROID);
@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity
                 replaceFragment(new CategoryFragment(), R.id.fragment_container);
                 break;
             case R.id.nav_welfare:
-                replaceFragment(GirlFragment.getInstance(), R.id.fragment_container);
+                replaceFragment(new GirlFragment(), R.id.fragment_container);
                 break;
             case R.id.nav_like:
                 replaceFragment(new LikeFragment(), R.id.fragment_container);

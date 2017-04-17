@@ -21,7 +21,7 @@ import java.util.List;
  * Created by lin on 2016/12/16.
  */
 
-public class GirlAdapter extends BaseQuickAdapter<Gank> {
+public class GirlAdapter extends BaseQuickAdapter<Gank,BaseViewHolder> {
     Context mContext;
     CommonPref mCommonPref;
 

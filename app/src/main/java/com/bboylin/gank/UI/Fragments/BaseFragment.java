@@ -18,7 +18,8 @@ import rx.schedulers.Schedulers;
  */
 
 public class BaseFragment extends Fragment {
-    public String tag="home";
+    public String tag = "home";
+    public static final int PAGE_SIZE = 20;
 
     public void setupToolBar(String str) {
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();

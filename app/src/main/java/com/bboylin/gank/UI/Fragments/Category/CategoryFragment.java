@@ -16,9 +16,9 @@ import com.bboylin.gank.Net.Repository.CategoryRepository;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.CategoryAdapter;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
+import com.bboylin.gank.UI.Widget.CustomLoadMoreView;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.orhanobut.logger.Logger;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -26,8 +26,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
 
 /**
  * Created by lin on 2016/12/16.
@@ -64,9 +62,11 @@ public class CategoryFragment extends BaseFragment {
         mList = mCategoryRepository.getCategoryUrlsFromDisk(category);
         mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mList);
         mCategoryAdapter.openLoadAnimation();
-        mCategoryAdapter.openLoadMore(PAGE_SIZE, true);
-        setLoadMoreListener();
+        mCategoryAdapter.setEnableLoadMore(true);
+        mCategoryAdapter.setAutoLoadMoreSize(1);
+        mCategoryAdapter.setLoadMoreView(new CustomLoadMoreView());
         mRecyclerView.setAdapter(mCategoryAdapter);
+        setLoadMoreListener();
         mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -86,43 +86,47 @@ public class CategoryFragment extends BaseFragment {
                 if (ableToLoadMore) {
                     ableToLoadMore = false;
                     page++;
-                    mCategoryRepository.getDataFromNet(category, 10, page, false)
-                            .subscribe(list -> mList.addAll(list),
-                                    throwable -> Logger.e(throwable, "error in category load more"),
+                    mCategoryRepository.getDataFromNet(category, 20, page, false)
+                            .subscribe(list -> mList = list,
+                                    throwable -> mCategoryAdapter.loadMoreFail(),
                                     () -> {
                                         mRecyclerView.post(new Runnable() {
                                             @Override
                                             public void run() {
                                                 if (mCurrentCounter >= 1000) {
-                                                    mCategoryAdapter.notifyDataChangedAfterLoadMore(false);
+                                                    mCategoryAdapter.loadMoreEnd();
                                                 } else {
-                                                    mCategoryAdapter.notifyDataChangedAfterLoadMore(mList, true);
-                                                    mCurrentCounter = mCategoryAdapter.getItemCount();
+                                                    mCategoryAdapter.addData(mList);
+                                                    mCurrentCounter = mCategoryAdapter.getData().size();
                                                     ableToLoadMore = true;
+                                                    mCategoryAdapter.loadMoreComplete();
                                                 }
                                             }
                                         });
                                     });
                 }
             }
-        });
+        }, mRecyclerView);
     }
 
     private void refresh() {
-        mCategoryRepository.getDataFromNet(category, 10, 1, true)
+        mCategoryRepository.getDataFromNet(category, 20, 1, true)
                 .subscribe(list -> System.out.println(""),
-                        throwable -> Logger.e(throwable, "error in category refresh"),
+                        throwable -> mCategoryAdapter.loadMoreFail(),
                         () -> {
                             mList = mCategoryRepository.getCategoryUrlsFromDisk(category);
                             mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mList);
                             mCategoryAdapter.openLoadAnimation();
-                            mCategoryAdapter.openLoadMore(PAGE_SIZE, true);
+                            mCategoryAdapter.setEnableLoadMore(true);
+                            mCategoryAdapter.setAutoLoadMoreSize(1);
+                            mCategoryAdapter.setLoadMoreView(new CustomLoadMoreView());
                             setLoadMoreListener();
-                            mRecyclerView.setAdapter(mCategoryAdapter);
                             ableToLoadMore = true;
+                            mRecyclerView.setAdapter(mCategoryAdapter);
                             mRefreshLayout.setRefreshing(false);
                             Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
                             page = 1;
+                            mCategoryAdapter.loadMoreComplete();
                         });
     }
 }

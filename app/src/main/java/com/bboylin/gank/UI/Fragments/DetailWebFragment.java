@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
  */
 
 public class DetailWebFragment extends BaseFragment {
-    private static volatile DetailWebFragment sDetailWebFragment = null;
     @BindView(R.id.detail_webView)
     WebView mWebView;
     ProgressDialog progressDialog;
@@ -31,23 +30,12 @@ public class DetailWebFragment extends BaseFragment {
         tag = "web";
     }
 
-    public static DetailWebFragment getInstance() {
-        if (sDetailWebFragment == null) {
-            synchronized (DetailWebFragment.class) {
-                if (sDetailWebFragment == null) {
-                    sDetailWebFragment = new DetailWebFragment();
-                }
-            }
-        }
-        return sDetailWebFragment;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_web, container, false);
         ButterKnife.bind(this, view);
-        setupToolBar(CommonPref.Factory.create(getActivity()).getWebViewGank().desc);
+        setupToolBar(CommonPref.Factory.create(getContext()).getWebViewGank().desc);
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);

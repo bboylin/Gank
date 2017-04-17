@@ -7,12 +7,14 @@ import com.bboylin.gank.Data.Entity.HomeResponse;
 import com.bboylin.gank.Net.Refrofit.GankService;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by lin on 2016/11/13.
  */
 
-public class HomeRepository extends BaseRepository {
+public class HomeRepository{
     private static volatile HomeRepository sHomeRepository;
     HomePref mHomePref;
     GankService mGankService;
@@ -36,7 +38,6 @@ public class HomeRepository extends BaseRepository {
 
     public Observable<HomeResponse> getDateListFromNet() {
         return mGankService.getHistoryDate()
-                .compose(applySchedulers())
                 .filter(dateResponse -> dateResponse.error == false)
                 .doOnNext(dateResponse -> update = (dateResponse != null && dateResponse != mHomePref.getDateResponse()))
                 .doOnNext(dateResponse -> {
@@ -46,7 +47,9 @@ public class HomeRepository extends BaseRepository {
                 })
                 .map(dateResponse -> dateResponse.results)
                 .map(strings -> strings.get(0))
-                .flatMap(s -> getTodayDataFromNet(s, update));
+                .flatMap(s -> getTodayDataFromNet(s, update))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<HomeResponse> getTodayDataFromNet(String date, boolean update) {
@@ -60,19 +63,21 @@ public class HomeRepository extends BaseRepository {
 
     public Observable<HomeResponse> getTodayDataFromNet(int year, int month, int day) {
         return GankService.Factory.getInstance().getTodayData(year, month, day)
-                .compose(applySchedulers())
                 .filter(homeResponse -> homeResponse.error == false)
                 .doOnNext(homeResponse -> {
                     mHomePref.setTodayResponse(homeResponse);
                     update = false;
-                });
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<HomeResponse.Result> loadMore(int year, int month, int day) {
         return GankService.Factory.getInstance().getTodayData(year, month, day)
-                .compose(applySchedulers())
                 .filter(todayResponse -> todayResponse.error == false)
-                .map(todayResponse -> todayResponse.results);
+                .map(todayResponse -> todayResponse.results)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public void clear() {

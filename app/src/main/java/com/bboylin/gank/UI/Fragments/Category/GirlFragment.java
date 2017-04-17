@@ -16,6 +16,7 @@ import com.bboylin.gank.Net.Repository.CategoryRepository;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.GirlAdapter;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
+import com.bboylin.gank.UI.Widget.CustomLoadMoreView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.orhanobut.logger.Logger;
 import com.yalantis.phoenix.PullToRefreshView;
@@ -26,14 +27,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
-
 /**
  * Created by lin on 2016/12/16.
  */
 
 public class GirlFragment extends BaseFragment {
-    private static final GirlFragment instance = new GirlFragment();
     @BindView(R.id.phoenix_refresh_layout)
     PullToRefreshView mRefreshLayout;
     @BindView(R.id.recycler_view)
@@ -45,10 +43,6 @@ public class GirlFragment extends BaseFragment {
     private int mCurrentCounter = 0;
     private List<Gank> mList = new ArrayList<>();
     private boolean ableToLoadMore = true;
-
-    public static GirlFragment getInstance() {
-        return instance;
-    }
 
     @Nullable
     @Override
@@ -62,7 +56,9 @@ public class GirlFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
         mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, mGirlPref.getGirlList());
         mGirlAdapter.openLoadAnimation();
-        mGirlAdapter.openLoadMore(PAGE_SIZE, true);
+        mGirlAdapter.setEnableLoadMore(true);
+        mGirlAdapter.setAutoLoadMoreSize(1);
+        mGirlAdapter.setLoadMoreView(new CustomLoadMoreView());
         setLoadMoreListener();
         mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
@@ -84,19 +80,20 @@ public class GirlFragment extends BaseFragment {
                 if (ableToLoadMore) {
                     ableToLoadMore = false;
                     page++;
-                    mCategoryRepository.getDataFromNet(GankApi.WELFARE, 10, page, false)
-                            .subscribe(strings -> mList.addAll(strings),
+                    mCategoryRepository.getDataFromNet(GankApi.WELFARE, 20, page, false)
+                            .subscribe(strings -> mList=strings,
                                     throwable -> Logger.e(throwable, "error in load more"),
                                     () -> {
                                         mRecyclerView.post(new Runnable() {
                                             @Override
                                             public void run() {
                                                 if (mCurrentCounter >= 1000) {
-                                                    mGirlAdapter.notifyDataChangedAfterLoadMore(false);
+                                                    mGirlAdapter.loadMoreEnd();
                                                 } else {
-                                                    mGirlAdapter.notifyDataChangedAfterLoadMore(mList, true);
-                                                    mCurrentCounter = mGirlAdapter.getItemCount();
+                                                    mGirlAdapter.addData(mList);
+                                                    mCurrentCounter = mGirlAdapter.getData().size();
                                                     ableToLoadMore = true;
+                                                    mGirlAdapter.loadMoreComplete();
                                                 }
                                             }
 
@@ -108,19 +105,22 @@ public class GirlFragment extends BaseFragment {
     }
 
     private void refresh() {
-        mCategoryRepository.getDataFromNet(GankApi.WELFARE, 10, 1, true)
+        mCategoryRepository.getDataFromNet(GankApi.WELFARE, 20, 1, true)
                 .subscribe(strings -> System.out.println(""),
-                        throwable -> Logger.e(throwable, "error in girl refresh"),
+                        throwable -> mGirlAdapter.loadMoreFail(),
                         () -> {
                             mList = new ArrayList<>();
                             mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, mGirlPref.getGirlList());
                             mGirlAdapter.openLoadAnimation();
-                            mGirlAdapter.openLoadMore(PAGE_SIZE, true);
+                            mGirlAdapter.setEnableLoadMore(true);
+                            mGirlAdapter.setAutoLoadMoreSize(1);
+                            mGirlAdapter.setLoadMoreView(new CustomLoadMoreView());
                             setLoadMoreListener();
                             mRecyclerView.setAdapter(mGirlAdapter);
                             mRefreshLayout.setRefreshing(false);
                             Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
                             page = 1;
+                            mGirlAdapter.loadMoreComplete();
                         });
     }
 

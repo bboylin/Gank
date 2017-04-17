@@ -10,12 +10,14 @@ import com.bboylin.gank.Net.Refrofit.GankService;
 import java.util.List;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by lin on 2016/12/17.
  */
 
-public class CategoryRepository extends BaseRepository {
+public class CategoryRepository{
     private static volatile CategoryRepository instance;
     private GankService mGankService;
     private CategoryPref mCategoryPref;
@@ -38,7 +40,6 @@ public class CategoryRepository extends BaseRepository {
 
     public Observable<List<Gank>> getDataFromNet(String category,int num, int page, boolean refresh){
         return mGankService.getCategoryData(category,num,page)
-                .compose(applySchedulers())
                 .filter(categoryResponse -> categoryResponse.error==false)
                 .map(categoryResponse -> categoryResponse.mGankList)
                 .doOnNext(list -> {
@@ -53,7 +54,9 @@ public class CategoryRepository extends BaseRepository {
                             mCategoryPref.setGirlList(list);
                         }
                     }
-                });
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public List<Gank> getCategoryUrlsFromDisk(String category){

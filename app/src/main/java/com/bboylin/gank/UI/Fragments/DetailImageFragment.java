@@ -29,7 +29,6 @@ import butterknife.ButterKnife;
  */
 
 public class DetailImageFragment extends BaseFragment {
-    private static volatile DetailImageFragment instance = null;
     @BindView(R.id.big_image)
     ImageView mImageView;
     private String date;
@@ -38,23 +37,12 @@ public class DetailImageFragment extends BaseFragment {
         tag = "image";
     }
 
-    public static DetailImageFragment getInstance() {
-        if (instance == null) {
-            synchronized (DetailImageFragment.class) {
-                if (instance == null) {
-                    instance = new DetailImageFragment();
-                }
-            }
-        }
-        return instance;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_image, container, false);
         ButterKnife.bind(this, view);
-        date = CommonPref.Factory.create(getActivity()).getWebViewGank().publishedAt.split("T")[0];
+        date = CommonPref.Factory.create(getContext()).getWebViewGank().publishedAt.split("T")[0];
         setupToolBar(date);
         if (CommonPref.Factory.create(getActivity()).getFirstImage()) {
             Toast.makeText(getContext(), "长按图片可保存到本地哦", Toast.LENGTH_SHORT).show();

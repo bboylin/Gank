@@ -20,7 +20,7 @@ import static com.bboylin.gank.Data.ItemTypeList.WARFARE;
  * Created by lin on 2016/11/13.
  */
 
-public class MainRepository extends BaseRepository {
+public class MainRepository{
     private static volatile MainRepository sMainRepository;
     private HomeRepository mHomeRepository;
     private CategoryRepository mCategoryRepository;

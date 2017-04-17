@@ -46,7 +46,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (fragmentTag.equals(DetailWebFragment.getInstance().tag)||fragmentTag.equals(DetailImageFragment.getInstance().tag)) {
+        if (fragmentTag.equals("web")||fragmentTag.equals("image")) {
             getSupportFragmentManager().popBackStack();
             fragmentTag = "home";
         } else {

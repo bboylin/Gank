@@ -19,9 +19,10 @@ import java.util.List;
  * Created by lin on 2016/12/17.
  */
 
-public class CategoryAdapter extends BaseQuickAdapter<Gank> {
+public class CategoryAdapter extends BaseQuickAdapter<Gank,BaseViewHolder> {
     Context mContext;
     CommonPref mCommonPref;
+
     public CategoryAdapter(Context context,int layoutResId, List<Gank> data) {
         super(layoutResId, data);
         mContext=context;
