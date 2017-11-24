@@ -21,4 +21,8 @@
     <string name="nav_all">All</string>
     <string name="nav_about">关于</string>
     <string name="nav_clear_cache">清空缓存</string>
+    <string name="ok">OK</string>
+    <string name="permission_storage_rationale">保存图片需要允许读写存储权限</string>
+    <string name="permision_available_storage">已允许读写内存权限</string>
+    <string name="permissions_not_granted">读写内存权限被禁止</string>
 </resources>
