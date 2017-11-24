@@ -144,20 +144,21 @@ public class MainActivity extends BaseActivity
                 //startActivity(new Intent(MainActivity.this,LikeFragment.class));
                 break;
             case R.id.nav_about:
-                Gank gank=new Gank();
-                gank.url="https://github.com/bboylin/gank/blob/master/README.md";
-                gank.desc="关于";
+                Gank gank = new Gank();
+                gank.url = "https://github.com/bboylin/gank/blob/master/README.md";
+                gank.desc = "关于";
                 mCommonPref.setWebViewGank(gank);
                 replaceFragment(new DetailWebFragment(), R.id.fragment_container);
                 break;
             case R.id.nav_clear_cache:
                 new AlertDialog.Builder(this).setTitle("提示")
                         .setMessage("确定要清空缓存吗？此操作不会清空收藏数据")
-                        .setPositiveButton("确定",((dialog, which) -> {
+                        .setPositiveButton("确定", ((dialog, which) -> {
                             mMainRepository.clear();
                             Toast.makeText(this, "缓存已清空", Toast.LENGTH_SHORT).show();
                         }))
-                        .setNegativeButton("取消",((dialog, which) -> {}))
+                        .setNegativeButton("取消", ((dialog, which) -> {
+                        }))
                         .create()
                         .show();
                 break;

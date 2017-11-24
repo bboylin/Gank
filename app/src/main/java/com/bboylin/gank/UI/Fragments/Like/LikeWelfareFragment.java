@@ -14,7 +14,9 @@ import com.bboylin.gank.Data.Treasure.CommonPref;
 import com.bboylin.gank.Net.Refrofit.GankApi;
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.GirlAdapter;
+import com.bboylin.gank.UI.Adapter.HomeAdapter;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
+import com.bboylin.gank.Utils.NetUtil;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import butterknife.ButterKnife;
  * Created by lin on 2016/12/20.
  */
 
-public class LikeWelfareFragment extends BaseFragment{
+public class LikeWelfareFragment extends BaseFragment {
     @BindView(R.id.phoenix_refresh_layout)
     PullToRefreshView mRefreshLayout;
     @BindView(R.id.recycler_view)
@@ -41,23 +43,18 @@ public class LikeWelfareFragment extends BaseFragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.phoenix_fragment_recycler, container, false);
         ButterKnife.bind(this, view);
+        setNoDataView(view, R.id.nodataview);
+        setSucceedView(view, R.id.phoenix_refresh_layout);
         mCommonPref = CommonPref.Factory.create(getActivity());
-        girlList.clear();
-        for (Gank gank : mCommonPref.getLikeItems()) {
-            if (gank.type.equals(GankApi.WELFARE)) {
-                girlList.add(gank);
-            }
-        }
-        mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, girlList);
+        refresh();
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, RecyclerView.VERTICAL));
-        mRecyclerView.setAdapter(mGirlAdapter);
         mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refresh();
                 mRefreshLayout.postDelayed(() -> {
                     mRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), NetUtil.networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
                 }, 2000);
             }
         });
@@ -65,13 +62,18 @@ public class LikeWelfareFragment extends BaseFragment{
     }
 
     public void refresh() {
-        girlList = new ArrayList<>();
+        girlList.clear();
         for (Gank gank : mCommonPref.getLikeItems()) {
             if (gank.type.equals(GankApi.WELFARE)) {
                 girlList.add(gank);
             }
         }
-        mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, girlList);
-        mRecyclerView.setAdapter(mGirlAdapter);
+        if (girlList.size() > 0) {
+            onSucceed();
+            mGirlAdapter = new GirlAdapter(getActivity(), R.layout.girl_item, girlList);
+            mRecyclerView.setAdapter(mGirlAdapter);
+        } else {
+            onNoData();
+        }
     }
 }

@@ -17,6 +17,7 @@ import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.GirlAdapter;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.CustomLoadMoreView;
+import com.bboylin.gank.Utils.NetUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.orhanobut.logger.Logger;
 import com.yalantis.phoenix.PullToRefreshView;
@@ -118,7 +119,7 @@ public class GirlFragment extends BaseFragment {
                             setLoadMoreListener();
                             mRecyclerView.setAdapter(mGirlAdapter);
                             mRefreshLayout.setRefreshing(false);
-                            Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), NetUtil.networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
                             page = 1;
                             mGirlAdapter.loadMoreComplete();
                         });

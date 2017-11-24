@@ -15,6 +15,7 @@ import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Adapter.CategoryAdapter;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
+import com.bboylin.gank.Utils.NetUtil;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -43,27 +44,22 @@ public class LikeCategoryFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.phoenix_fragment_recycler, container, false);
         ButterKnife.bind(this, view);
+        setNoDataView(view, R.id.nodataview);
+        setSucceedView(view, R.id.phoenix_refresh_layout);
         mCommonPref = CommonPref.Factory.create(getActivity());
         category = getArguments().getString(LikeFragment.TAG);
-        mGankList.clear();
-        for (Gank gank : mCommonPref.getLikeItems()) {
-            if (gank.type.equals(category)) {
-                mGankList.add(gank);
-            }
-        }
-        mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mGankList);
+        refresh();
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(new SimpleItemDecoration(0));
-        mRecyclerView.setAdapter(mCategoryAdapter);
         mRefreshLayout.setOnRefreshListener(new PullToRefreshView.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refresh();
                 mRefreshLayout.postDelayed(() -> {
                     mRefreshLayout.setRefreshing(false);
-                    Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), NetUtil.networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
                 }, 2000);
             }
         });
@@ -77,7 +73,12 @@ public class LikeCategoryFragment extends BaseFragment {
                 mGankList.add(gank);
             }
         }
-        mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mGankList);
-        mRecyclerView.setAdapter(mCategoryAdapter);
+        if (mGankList.size() > 0) {
+            onSucceed();
+            mCategoryAdapter = new CategoryAdapter(getActivity(), R.layout.category_item, mGankList);
+            mRecyclerView.setAdapter(mCategoryAdapter);
+        } else {
+            onNoData();
+        }
     }
 }

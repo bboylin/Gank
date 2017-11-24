@@ -15,7 +15,6 @@ public class GankApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        //leakcanary
         if (LeakCanary.isInAnalyzerProcess(this)){
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.

@@ -1,19 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <com.yalantis.phoenix.PullToRefreshView
         android:id="@+id/phoenix_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <android.support.v7.widget.RecyclerView
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-        />
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp" />
     </com.yalantis.phoenix.PullToRefreshView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/nodataview"
+            layout="@layout/lib_no_data_view"
+            android:visibility="gone" />
+    </LinearLayout>
 </LinearLayout>

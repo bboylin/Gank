@@ -18,6 +18,7 @@ import com.bboylin.gank.UI.Adapter.CategoryAdapter;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.CustomLoadMoreView;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
+import com.bboylin.gank.Utils.NetUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.yalantis.phoenix.PullToRefreshView;
 
@@ -124,7 +125,7 @@ public class CategoryFragment extends BaseFragment {
                             ableToLoadMore = true;
                             mRecyclerView.setAdapter(mCategoryAdapter);
                             mRefreshLayout.setRefreshing(false);
-                            Toast.makeText(getContext(), networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), NetUtil.networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
                             page = 1;
                             mCategoryAdapter.loadMoreComplete();
                         });
