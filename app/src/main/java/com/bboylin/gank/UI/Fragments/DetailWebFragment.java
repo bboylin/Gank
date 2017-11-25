@@ -16,6 +16,8 @@ import com.bboylin.gank.UI.Widget.MyProgressDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.WebViewCache;
 
 /**
  * Created by lin on 2016/11/12.
@@ -23,7 +25,7 @@ import butterknife.ButterKnife;
 
 public class DetailWebFragment extends BaseFragment {
     @BindView(R.id.detail_webView)
-    WebView mWebView;
+    CacheWebView mWebView;
     ProgressDialog progressDialog;
 
     public DetailWebFragment() {
@@ -40,9 +42,11 @@ public class DetailWebFragment extends BaseFragment {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setSupportZoom(true);
+        mWebView.setCacheStrategy(WebViewCache.CacheStrategy.FORCE);
+        mWebView.setBlockNetworkImage(true);
         mWebView.setWebViewClient(new MyWeebViewClient());
         mWebView.loadUrl(CommonPref.Factory.create(getContext()).getWebViewGank().url);
-        showProgressDialog("正在加载中","请稍候");
+        showProgressDialog("正在加载中", "请稍候");
         return view;
     }
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <WebView
+
+    <ren.yale.android.cachewebviewlib.CacheWebView
         android:id="@+id/detail_webView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </WebView>
+        android:layout_height="wrap_content"></ren.yale.android.cachewebviewlib.CacheWebView>
+
 </LinearLayout>

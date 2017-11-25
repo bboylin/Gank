@@ -25,7 +25,6 @@ import com.bboylin.gank.UI.Fragments.Category.HomeFragment;
 import com.bboylin.gank.UI.Fragments.DetailImageFragment;
 import com.bboylin.gank.UI.Fragments.DetailWebFragment;
 import com.bboylin.gank.UI.Fragments.Like.LikeFragment;
-import com.bboylin.gank.UI.Widget.ShareBottomDialog;
 import com.bboylin.gank.Utils.RxBus;
 import com.orhanobut.logger.Logger;
 
@@ -95,9 +94,10 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_share:
-                ShareBottomDialog dialog = new ShareBottomDialog();
-                dialog.show(getSupportFragmentManager());
+            case R.id.action_more:
+                if (fragmentTag.equals("web")){
+                    // TODO: 2017/11/26 应该用activity承载webview
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
