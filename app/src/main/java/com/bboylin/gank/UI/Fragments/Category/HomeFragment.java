@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import com.bboylin.gank.UI.Adapter.HomeAdapter;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.SimpleItemDecoration;
 import com.bboylin.gank.Utils.NetUtil;
-import com.orhanobut.logger.Logger;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class HomeFragment extends BaseFragment {
                 mHomeRepository.getDateListFromNet()
                         .map(homeResponse -> homeResponse.results)
                         .subscribe(result -> setupRecyclerView(getDataList(result), true),
-                                throwable -> Logger.e(throwable, "onError"),
+                                throwable -> Log.e(TAG, "onError", throwable),
                                 () -> {
                                     mRefreshLayout.setRefreshing(false);
                                     Toast.makeText(getContext(), NetUtil.networkConnected() ? "刷新成功" : "网络无连接", Toast.LENGTH_SHORT).show();
@@ -96,8 +96,9 @@ public class HomeFragment extends BaseFragment {
                 .map(homeResponse -> homeResponse.results)
                 .compose(applySchedulers())
                 .subscribe(result -> setupRecyclerView(getDataList(result), true),
-                        throwable -> Logger.e(throwable, "onError"),
-                        () -> Logger.d("onCompleted"));
+                        throwable -> Log.e(TAG, "onError", throwable),
+                        () -> {
+                        });
     }
 
     public void setLoadMoreListener() {
@@ -135,7 +136,7 @@ public class HomeFragment extends BaseFragment {
             mHomeRepository.loadMore(Integer.parseInt(date[0]),
                     Integer.parseInt(date[1]), Integer.parseInt(date[2]))
                     .subscribe(result -> setupRecyclerView(getDataList(result), false),
-                            throwable -> Logger.e(throwable, date + "数据加载失败"),
+                            throwable -> Log.e(TAG, date + "数据加载失败", throwable),
                             () -> ableToLoadMore = true);
         }
     }

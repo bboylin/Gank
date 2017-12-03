@@ -1,26 +1,24 @@
 package com.bboylin.gank.UI.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.bboylin.gank.R;
 import com.bboylin.gank.UI.Fragments.BaseFragment;
-import com.bboylin.gank.UI.Fragments.DetailImageFragment;
-import com.bboylin.gank.UI.Fragments.DetailWebFragment;
 import com.bboylin.gank.UI.ILoadingState;
 import com.bboylin.gank.Utils.NetUtil;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by lin on 2016/10/29.
@@ -28,15 +26,68 @@ import rx.schedulers.Schedulers;
 
 public class BaseActivity extends AppCompatActivity {
     public static String fragmentTag = "home";
+    private static final String TAG = BaseActivity.class.getCanonicalName();
     protected View mRefreshView;
     protected View mFailedView;
     protected View mSucceedView;
     protected View mNoDataView;
+    protected CompositeSubscription compositeSubscription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NetUtil.init(this);
+        compositeSubscription = new CompositeSubscription();
+        Log.d(TAG, "oncreate");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onrestart");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onresume");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onstart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onpause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.clear();
+        Log.d(TAG, "ondestory");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        Log.d(TAG, "onSaveInstanceState2");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState1");
     }
 
     protected void replaceFragment(BaseFragment fragment, @IdRes int layoutContentId) {

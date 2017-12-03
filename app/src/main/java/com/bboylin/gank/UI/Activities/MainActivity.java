@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -26,10 +27,10 @@ import com.bboylin.gank.UI.Fragments.DetailImageFragment;
 import com.bboylin.gank.UI.Fragments.DetailWebFragment;
 import com.bboylin.gank.UI.Fragments.Like.LikeFragment;
 import com.bboylin.gank.Utils.RxBus;
-import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscription;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,6 +45,7 @@ public class MainActivity extends BaseActivity
     private CommonPref mCommonPref;
     public static int screenWidth;
     public static int screenHeight;
+    private static final String TAG = MainActivity.class.getCanonicalName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +60,11 @@ public class MainActivity extends BaseActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         mMainRepository.getDataFromNet(new ItemTypeList())
-                .subscribe(o -> Logger.d(o),
-                        throwable -> Logger.e(throwable, "error in main http queue"),
-                        () -> Logger.d("finish"));
+                .subscribe(o -> {
+                        },
+                        throwable -> Log.e(TAG, "error in main http queue", throwable),
+                        () -> {
+                        });
         replaceFragment(new HomeFragment(), R.id.fragment_container);
         navigationView.setNavigationItemSelectedListener(this);
         register();
@@ -70,7 +74,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void register() {
-        RxBus.getDefault().toObserverable(GankClickEvent.class)
+        Subscription subscription = RxBus.getDefault().toObserverable(GankClickEvent.class)
                 .doOnNext(gankClickEvent -> mCommonPref.setWebViewGank(gankClickEvent.mGank))
                 .compose(applySchedulers())
                 .subscribe(gankClickEvent -> {
@@ -83,6 +87,7 @@ public class MainActivity extends BaseActivity
                             break;
                     }
                 }, throwable -> Toast.makeText(this, "出错了", Toast.LENGTH_SHORT));
+        compositeSubscription.add(subscription);
     }
 
     @Override
@@ -95,7 +100,7 @@ public class MainActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_more:
-                if (fragmentTag.equals("web")){
+                if (fragmentTag.equals("web")) {
                     // TODO: 2017/11/26 应该用activity承载webview
                 }
                 break;

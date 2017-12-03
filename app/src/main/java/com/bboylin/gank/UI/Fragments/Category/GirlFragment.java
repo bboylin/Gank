@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import com.bboylin.gank.UI.Fragments.BaseFragment;
 import com.bboylin.gank.UI.Widget.CustomLoadMoreView;
 import com.bboylin.gank.Utils.NetUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.orhanobut.logger.Logger;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -83,7 +83,7 @@ public class GirlFragment extends BaseFragment {
                     page++;
                     mCategoryRepository.getDataFromNet(GankApi.WELFARE, 20, page, false)
                             .subscribe(strings -> mList=strings,
-                                    throwable -> Logger.e(throwable, "error in load more"),
+                                    throwable -> Log.e(TAG, "error in load more",throwable),
                                     () -> {
                                         mRecyclerView.post(new Runnable() {
                                             @Override
